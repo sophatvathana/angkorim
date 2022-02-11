@@ -1,0 +1,24 @@
+appName: AngkorIm
+mode: debug
+base:
+  port: 9522
+  url: http://localhost:4000
+  static_path: data/www
+  locales_path: locales
+
+database:
+  driver: sqlite
+  postgres:
+    charset: utf8
+    host: db-joorum-do-user-8740638-0.b.db.ondigitalocean.com
+    port: 25060
+    name: db_chat
+    user: joorum
+    password: ukx6q4sq0d75igzb
+    pool:
+      max: 20
+      min: 5
+    ssl: require
+
+  sqlite:
+    path: data/apsara.db

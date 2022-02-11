@@ -1,0 +1,8 @@
+angkorim
+
+# app.yaml
+backend/data/www/images/
+data/
+var/logs/*
+backend/__debug_bin
+__debug_bin
