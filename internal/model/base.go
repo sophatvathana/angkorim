@@ -8,7 +8,7 @@ import (
 )
 
 var Models = []interface{}{
-	&User{}, &Room{},
+	&User{}, &Room{}, &UserRoom{},
 }
 
 type BaseModel struct {

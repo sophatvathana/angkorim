@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"angkorim/internal/log"
+	"angkorim/pkg/log"
 
+	"github.com/lithammer/shortuuid/v4"
 	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -19,6 +20,14 @@ import (
 var (
 	db *gorm.DB
 )
+
+type StoreInterface interface {
+}
+
+var Store StoreInterface
+
+type store struct {
+}
 
 const DRIVER_SQLITE = "sqlite"
 const DRIVER_POSTGRES = "postgres"
@@ -76,5 +85,59 @@ func Setup() {
 	if err != nil {
 		panic(err)
 	}
+}
 
+func Tx(txFunc func(tx *gorm.DB) error) (err error) {
+	tx := db.Begin()
+	if tx.Error != nil {
+		return
+	}
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+			panic(r) // re-throw panic after Rollback
+		} else if err != nil {
+			tx.Rollback()
+		} else {
+			err = tx.Commit().Error
+		}
+	}()
+
+	err = txFunc(tx)
+	return err
+}
+
+func (s store) CreateP2P(from *model.User, to *model.User) error {
+	err := Tx(func(tx *gorm.DB) error {
+		u := shortuuid.New()
+		room := &model.Room{
+			Name: u,
+		}
+		err := s.CreateRoom(room)
+		err = s.CreateUserRoom(&model.UserRoom{
+			UserID: from.ID,
+			RoomID: room.ID,
+		})
+		err = s.CreateUserRoom(&model.UserRoom{
+			UserID: to.ID,
+			RoomID: room.ID,
+		})
+		return err
+	})
+	return err
+}
+
+func (s store) CreateRoom(t *model.Room) error {
+	err := db.Create(t).Error
+	return err
+}
+
+func (s store) CreateUserRoom(t *model.UserRoom) error {
+	err := db.Create(t).Error
+	return err
+}
+
+func init() {
+	Store = store{}
 }
