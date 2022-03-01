@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!DOCTYPE tsung SYSTEM "/usr/local/Cellar/tsung/1.7.0/share/tsung/tsung-1.0.dtd" []>
+<tsung loglevel="notice" version="1.0" dumptraffic="false">
+  <clients>
+    <client host="localhost" use_controller_vm="true" maxusers="1000000" />
+  </clients>
+
+  <servers>
+    <server host="0.0.0.0" port="9000" type="tcp" />
+  </servers>
+
+  <load>
+
+    <arrivalphase phase="1" duration="120" unit="second">
+      <users maxnumber="1000000" arrivalrate="50" unit="second" />
+    </arrivalphase>
+  </load>
+
+  <sessions>
+    <session name="websocket" probability="100" type="ts_websocket">
+      <!-- <setdynvars sourcetype="random_string" length="4">
+        <var name="baseid" />
+      </setdynvars> -->
+
+      <request subst="true">
+        <websocket type="connect" path="/ws/hQ5BwnOI?apiKey=VSyGDfJAnzrPMEXqQpEFLCyZkDCgicE1">
+          <!-- <http_header name="Cookie" value="niltoken=6YXv5bXg8c9ob92q0FnOJF3E320896G6"/> -->
+        </websocket>
+      </request>
+
+      <request subst="true">
+        <websocket type="message">{"type":"message","data":"Hello"}</websocket>
+      </request>
+
+      <!-- main loop -->
+      <for from="1" to="100" incr="1" var="ctr">
+    
+        <foreach name="topicx" in="shuffled_subs">
+          <thinktime value="1" random="true"></thinktime>
+
+          <!-- <request subst="true">
+            <dyn_variable name="code" jsonpath="ctrl.code"/>
+            <websocket type="message" frame="text">{"type":"message","data":"Hello"}</websocket>
+          </request>
+
+          <if var="code" eq="200">
+            <for from="1" to="50" incr="1" var="counter">
+              <thinktime min="2" max="10" random="true"></thinktime>
+
+              <request subst="true">
+                <websocket type="message" frame="text">{"type":"message","data":"Hello"}</websocket>
+              </request>
+            </for>
+          </if> -->
+
+          <request subst="true">
+            <websocket type="message" frame="text">{"type":"message","data":"Hello"}</websocket>
+          </request>
+
+        </foreach>
+      </for>
+      <!-- end main loop -->
+
+      <request>
+        <websocket type="close"></websocket>
+      </request>
+    </session>
+  </sessions>
+</tsung>
