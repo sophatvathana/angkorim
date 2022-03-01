@@ -1,16 +1,21 @@
 package cmd
 
 import (
+	"angkorim/internal/server"
 	"angkorim/internal/store"
+	"angkorim/pkg/log"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/ulule/limiter/v3"
+	mgin "github.com/ulule/limiter/v3/drivers/middleware/gin"
+	"github.com/ulule/limiter/v3/drivers/store/memory"
 )
 
 var (
@@ -35,7 +40,7 @@ var (
 )
 
 func init() {
-	StartServer.PersistentFlags().StringVarP(&conf, "conf", "c", "./app.yaml", "Start server with provided configuration file")
+	StartServer.PersistentFlags().StringVarP(&conf, "conf", "c", "./config.yaml", "Start server with provided configuration file")
 	StartServer.PersistentFlags().StringVarP(&fcmConfig, "fcmconf", "f", "./joorum.json", "Start server with provided configuration file")
 	StartServer.PersistentFlags().StringVarP(&port, "port", "p", "9527", "Tcp port server listening on")
 	StartServer.PersistentFlags().Uint8VarP(&loglevel, "loglevel", "l", 0, "Log level")
@@ -51,7 +56,7 @@ func usage() {
 func setup() {
 	//1.Set up log level
 	zerolog.SetGlobalLevel(zerolog.Level(loglevel))
-
+	log.Init()
 	//2.Set up configuration
 	viper.SetConfigFile(conf)
 	content, err := ioutil.ReadFile(conf)
@@ -65,9 +70,20 @@ func setup() {
 	}
 	//3.Set up database connection
 	store.Setup()
+
 }
 
 func run() error {
-	fmt.Println("Helloworl")
-	return nil
+	rate, err := limiter.NewRateFromFormatted("10000-H")
+	if err != nil {
+		panic(err)
+	}
+	store := memory.NewStore()
+	instance := limiter.New(store, rate, limiter.WithTrustForwardHeader(true))
+	middleware := mgin.NewMiddleware(instance)
+	engine := gin.Default()
+	engine.ForwardedByClientIP = true
+	engine.Use(middleware)
+	server.SetupRoute(engine, cors)
+	return engine.Run("0.0.0.0:" + viper.GetString("base.port"))
 }
