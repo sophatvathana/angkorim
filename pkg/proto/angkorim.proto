@@ -1,0 +1,137 @@
+syntax = "proto3";
+package protocol;
+option go_package = "angkorim/pkg/protocol/";
+
+message EmptyMsg{}
+
+enum ResponseCode {
+  UNKNOWN_ERROR = 0x00;
+  REQUEST_ERROR = 0x1000;
+  REQUEST_SUCCESS = 0x2000;
+}
+
+enum Command {
+  CMD_UNKNOWN = 0;
+  CMD_SIGNIN = 1;
+  CMD_SEND_MSG = 2;
+  CMD_SUBSCRIBE_TOPIC = 3;
+}
+
+enum DeviceType {
+  WEB = 0;
+  ANDRIOD = 1;
+  IOS = 2;
+  CLI = 3;
+  UNKNOWN = 4;
+}
+
+enum MessageType {
+  MSG_UNKNOWN = 0x0000;
+  MSG_TEXT = 0x1000;
+}
+
+enum MessageStatus {
+  DELIVERED = 0x000;
+  SEEN = 0x100;
+}
+
+enum ReceiverType {
+  RECEV_UNKOWN = 0x000;
+  RECEV_P2P = 0x001;
+  RECEV_GROUP = 0x002;
+  RECEV_CHANNEL = 0x003;
+  RECEV_SMALL_GROUP = 0x004;
+}
+
+message Request {
+  Command cmd = 1;
+  bytes data = 2;
+} 
+
+message Response {
+  Command cmd = 1;  
+  ResponseCode code = 2;  
+  string message = 3;  
+  bytes data = 4;  
+}
+
+message SignInRequest {
+  string phone_number = 1; 
+  string code = 2;  
+  int64 device_id = 3; 
+}
+
+message SignInResponse {  
+  string token = 1; 
+}
+
+message SubscribeRequest {
+  string topic = 1;
+}
+
+message SubscribeResponse {
+  string topic = 1;
+}
+
+
+message RegisterDeviceRequest {
+  string device_id = 1;
+  DeviceType device_type = 2;
+  string user_agent = 3;
+}
+
+message RegisterDeviceResponse {
+  string device_id = 1;
+  string user_agent = 2;
+}
+
+message User {
+  string user_id = 1;  
+  string nickname = 2; 
+  int32 gender = 3;  
+  string avatar_url = 4; 
+  string extra = 5; 
+  int64 create_time = 6;  
+  int64 update_time = 7;  
+}
+
+message Message {
+  User sender = 1;  
+  ReceiverType receiver_type = 2; 
+  string to_id = 3;  
+  repeated int64 to_user_ids = 4;  
+  MessageType message_type = 5;  
+  bytes message_content = 6; 
+  int64 seq = 7; 
+  int64 create_time = 8;  
+  MessageStatus status = 9;  
+}
+
+message MessageRequest {
+  Message message = 1;
+}
+
+message SimpleMessageRequest {
+  string message = 1;
+  string topic = 2;
+}
+
+message SimpleMessageResponse {
+  string message = 1;
+}
+
+service SessionService {
+  //rpc RegisterDevice(RegisterDeviceRequest) returns (RegisterDeviceResponse);
+}
+
+service MessageService {
+
+}
+
+service UserService {
+
+}
+
+service SyncService {
+
+}
