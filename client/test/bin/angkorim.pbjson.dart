@@ -28,11 +28,12 @@ const Command$json = const {
     const {'1': 'CMD_SIGNIN', '2': 1},
     const {'1': 'CMD_SEND_MSG', '2': 2},
     const {'1': 'CMD_SUBSCRIBE_TOPIC', '2': 3},
+    const {'1': 'CMD_CLUSTER_UPDATE_MEMBERS', '2': 4},
   ],
 };
 
 /// Descriptor for `Command`. Decode as a `google.protobuf.EnumDescriptorProto`.
-final $typed_data.Uint8List commandDescriptor = $convert.base64Decode('CgdDb21tYW5kEg8KC0NNRF9VTktOT1dOEAASDgoKQ01EX1NJR05JThABEhAKDENNRF9TRU5EX01TRxACEhcKE0NNRF9TVUJTQ1JJQkVfVE9QSUMQAw==');
+final $typed_data.Uint8List commandDescriptor = $convert.base64Decode('CgdDb21tYW5kEg8KC0NNRF9VTktOT1dOEAASDgoKQ01EX1NJR05JThABEhAKDENNRF9TRU5EX01TRxACEhcKE0NNRF9TVUJTQ1JJQkVfVE9QSUMQAxIeChpDTURfQ0xVU1RFUl9VUERBVEVfTUVNQkVSUxAE');
 @$core.Deprecated('Use deviceTypeDescriptor instead')
 const DeviceType$json = const {
   '1': 'DeviceType',
@@ -120,12 +121,12 @@ const SignInRequest$json = const {
   '2': const [
     const {'1': 'phone_number', '3': 1, '4': 1, '5': 9, '10': 'phoneNumber'},
     const {'1': 'code', '3': 2, '4': 1, '5': 9, '10': 'code'},
-    const {'1': 'device_id', '3': 3, '4': 1, '5': 3, '10': 'deviceId'},
+    const {'1': 'device_id', '3': 3, '4': 1, '5': 9, '10': 'deviceId'},
   ],
 };
 
 /// Descriptor for `SignInRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List signInRequestDescriptor = $convert.base64Decode('Cg1TaWduSW5SZXF1ZXN0EiEKDHBob25lX251bWJlchgBIAEoCVILcGhvbmVOdW1iZXISEgoEY29kZRgCIAEoCVIEY29kZRIbCglkZXZpY2VfaWQYAyABKANSCGRldmljZUlk');
+final $typed_data.Uint8List signInRequestDescriptor = $convert.base64Decode('Cg1TaWduSW5SZXF1ZXN0EiEKDHBob25lX251bWJlchgBIAEoCVILcGhvbmVOdW1iZXISEgoEY29kZRgCIAEoCVIEY29kZRIbCglkZXZpY2VfaWQYAyABKAlSCGRldmljZUlk');
 @$core.Deprecated('Use signInResponseDescriptor instead')
 const SignInResponse$json = const {
   '1': 'SignInResponse',
@@ -244,3 +245,39 @@ const SimpleMessageResponse$json = const {
 
 /// Descriptor for `SimpleMessageResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List simpleMessageResponseDescriptor = $convert.base64Decode('ChVTaW1wbGVNZXNzYWdlUmVzcG9uc2USGAoHbWVzc2FnZRgBIAEoCVIHbWVzc2FnZQ==');
+@$core.Deprecated('Use nodeInfoDescriptor instead')
+const NodeInfo$json = const {
+  '1': 'NodeInfo',
+  '2': const [
+    const {'1': 'Name', '3': 1, '4': 1, '5': 9, '10': 'Name'},
+    const {'1': 'Ip', '3': 2, '4': 1, '5': 9, '10': 'Ip'},
+    const {'1': 'Port', '3': 3, '4': 1, '5': 5, '10': 'Port'},
+    const {'1': 'CreatedAt', '3': 4, '4': 1, '5': 3, '10': 'CreatedAt'},
+    const {'1': 'Active', '3': 5, '4': 1, '5': 8, '10': 'Active'},
+  ],
+};
+
+/// Descriptor for `NodeInfo`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List nodeInfoDescriptor = $convert.base64Decode('CghOb2RlSW5mbxISCgROYW1lGAEgASgJUgROYW1lEg4KAklwGAIgASgJUgJJcBISCgRQb3J0GAMgASgFUgRQb3J0EhwKCUNyZWF0ZWRBdBgEIAEoA1IJQ3JlYXRlZEF0EhYKBkFjdGl2ZRgFIAEoCFIGQWN0aXZl');
+@$core.Deprecated('Use membersUpdateDescriptor instead')
+const MembersUpdate$json = const {
+  '1': 'MembersUpdate',
+  '2': const [
+    const {'1': 'Name', '3': 1, '4': 1, '5': 9, '10': 'Name'},
+    const {'1': 'NodeMembers', '3': 2, '4': 3, '5': 11, '6': '.protocol.NodeInfo', '10': 'NodeMembers'},
+  ],
+};
+
+/// Descriptor for `MembersUpdate`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List membersUpdateDescriptor = $convert.base64Decode('Cg1NZW1iZXJzVXBkYXRlEhIKBE5hbWUYASABKAlSBE5hbWUSNAoLTm9kZU1lbWJlcnMYAiADKAsyEi5wcm90b2NvbC5Ob2RlSW5mb1ILTm9kZU1lbWJlcnM=');
+@$core.Deprecated('Use requestJoinNodeDescriptor instead')
+const RequestJoinNode$json = const {
+  '1': 'RequestJoinNode',
+  '2': const [
+    const {'1': 'From', '3': 1, '4': 1, '5': 11, '6': '.protocol.NodeInfo', '10': 'From'},
+    const {'1': 'ToAddr', '3': 2, '4': 1, '5': 9, '10': 'ToAddr'},
+  ],
+};
+
+/// Descriptor for `RequestJoinNode`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List requestJoinNodeDescriptor = $convert.base64Decode('Cg9SZXF1ZXN0Sm9pbk5vZGUSJgoERnJvbRgBIAEoCzISLnByb3RvY29sLk5vZGVJbmZvUgRGcm9tEhYKBlRvQWRkchgCIAEoCVIGVG9BZGRy');

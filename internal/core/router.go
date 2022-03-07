@@ -1,12 +1,12 @@
-package server
+package core
 
 import (
-	"angkorim/internal/server/middleware"
+	"angkorim/internal/core/middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRoute(e *gin.Engine, cors bool) {
+func SetupRoute(e *gin.Engine, cors bool, server *Server) {
 	e.Use(
 		gin.Recovery(),
 	)
@@ -22,7 +22,6 @@ func SetupRoute(e *gin.Engine, cors bool) {
 	//#             API              #
 	//#                              #
 	//################################
-	server := &Server{}
 	api := e.Group("/api")
 	api.GET("/ws", func(c *gin.Context) {
 		server.HandleConnections(

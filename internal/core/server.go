@@ -1,4 +1,4 @@
-package server
+package core
 
 import (
 	"angkorim/pkg/log"
@@ -7,8 +7,11 @@ import (
 	"runtime"
 
 	"github.com/gin-gonic/gin"
-
 	"github.com/gorilla/websocket"
+	"github.com/spf13/viper"
+	"github.com/ulule/limiter/v3"
+	mgin "github.com/ulule/limiter/v3/drivers/middleware/gin"
+	"github.com/ulule/limiter/v3/drivers/store/memory"
 	"go.uber.org/zap"
 )
 
@@ -22,6 +25,21 @@ var upgrader = websocket.Upgrader{
 var HubManager = NewHub()
 
 type Server struct {
+}
+
+func (s *Server) RunCluster() {
+	// TODO
+	// isMaster := viper.GetBool("clusters.isMaster")
+	// serverName := viper.GetString("clusters.name")
+	// selfIp := viper.GetString("clusters.ip")
+	// selfPort := viper.GetInt("clusters.port")
+
+	// var nodes []Node
+	// err := viper.UnmarshalKey("clusters.nodes", &nodes)
+	// if err != nil {
+	// 	panic("Unable to unmarshal config")
+	// }
+
 }
 
 func (s *Server) HandleConnections(w http.ResponseWriter, r *http.Request, ctx *gin.Context, correlationID string) {
@@ -42,6 +60,21 @@ func (s *Server) HandleConnections(w http.ResponseWriter, r *http.Request, ctx *
 
 		client.HandleMessage(data)
 	}
+}
+
+func (s *Server) RunWS(enableCore bool) error {
+	rate, err := limiter.NewRateFromFormatted("10000-H")
+	if err != nil {
+		panic(err)
+	}
+	store := memory.NewStore()
+	instance := limiter.New(store, rate, limiter.WithTrustForwardHeader(true))
+	middleware := mgin.NewMiddleware(instance)
+	engine := gin.Default()
+	engine.ForwardedByClientIP = true
+	engine.Use(middleware)
+	SetupRoute(engine, enableCore, s)
+	return engine.Run("0.0.0.0:" + viper.GetString("base.port"))
 }
 
 func RecoverPanic() {

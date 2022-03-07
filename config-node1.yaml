@@ -1,7 +1,7 @@
 appName: AngkorIm
 mode: debug
 base:
-  port: 9522
+  port: 9523
   url: http://localhost:4000
   static_path: data/www
   locales_path: locales
@@ -24,16 +24,15 @@ database:
     path: data/apsara.db
 
 clusters:
-  name: master
-  isMaster: true #false if you are node
+  name: node1
+  isMaster: false #false if you are node
   ip: 127.0.0.1
-  port: 9000
+  port: 9001
   nodes:
-    # - name: node1
-    #   ip: localhost
-    #   port: 9001
-    # - name: node2
-    #   ip: localhost
-    #   port: 9002
+  nodes:
+    - name: master
+      ip: localhost
+      port: 9000
+  
   
 

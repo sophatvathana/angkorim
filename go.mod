@@ -15,6 +15,7 @@ require (
 	github.com/rs/zerolog v1.26.1
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.10.1
+	github.com/ulule/limiter v2.2.2+incompatible
 	github.com/ulule/limiter/v3 v3.9.0
 	go.uber.org/zap v1.17.0
 	golang.org/x/text v0.3.7

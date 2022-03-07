@@ -13,6 +13,7 @@ Future<WebSocket> connect() async {
   if (ws.readyState == WebSocket.open) {
     SignInRequest req = SignInRequest();
     req.phoneNumber = "85599987498";
+    req.deviceId = "device-A";
     ws.add(encode(Command.CMD_SIGNIN,req));  
     ws.add(encode(Command.CMD_SUBSCRIBE_TOPIC,SubscribeRequest(topic: "A")));  
     // ws.add(encode(Command.CMD_SEND_MSG,SimpleMessageRequest(topic: "A", message: "Hello world"))); 

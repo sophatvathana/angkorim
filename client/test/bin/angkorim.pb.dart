@@ -197,7 +197,7 @@ class SignInRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SignInRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'protocol'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'phoneNumber')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'code')
-    ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'deviceId')
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'deviceId')
     ..hasRequiredFields = false
   ;
 
@@ -205,7 +205,7 @@ class SignInRequest extends $pb.GeneratedMessage {
   factory SignInRequest({
     $core.String? phoneNumber,
     $core.String? code,
-    $fixnum.Int64? deviceId,
+    $core.String? deviceId,
   }) {
     final _result = create();
     if (phoneNumber != null) {
@@ -259,9 +259,9 @@ class SignInRequest extends $pb.GeneratedMessage {
   void clearCode() => clearField(2);
 
   @$pb.TagNumber(3)
-  $fixnum.Int64 get deviceId => $_getI64(2);
+  $core.String get deviceId => $_getSZ(2);
   @$pb.TagNumber(3)
-  set deviceId($fixnum.Int64 v) { $_setInt64(2, v); }
+  set deviceId($core.String v) { $_setString(2, v); }
   @$pb.TagNumber(3)
   $core.bool hasDeviceId() => $_has(2);
   @$pb.TagNumber(3)
@@ -986,5 +986,226 @@ class SimpleMessageResponse extends $pb.GeneratedMessage {
   $core.bool hasMessage() => $_has(0);
   @$pb.TagNumber(1)
   void clearMessage() => clearField(1);
+}
+
+class NodeInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'NodeInfo', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'protocol'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Name', protoName: 'Name')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Ip', protoName: 'Ip')
+    ..a<$core.int>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Port', $pb.PbFieldType.O3, protoName: 'Port')
+    ..aInt64(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'CreatedAt', protoName: 'CreatedAt')
+    ..aOB(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Active', protoName: 'Active')
+    ..hasRequiredFields = false
+  ;
+
+  NodeInfo._() : super();
+  factory NodeInfo({
+    $core.String? name,
+    $core.String? ip,
+    $core.int? port,
+    $fixnum.Int64? createdAt,
+    $core.bool? active,
+  }) {
+    final _result = create();
+    if (name != null) {
+      _result.name = name;
+    }
+    if (ip != null) {
+      _result.ip = ip;
+    }
+    if (port != null) {
+      _result.port = port;
+    }
+    if (createdAt != null) {
+      _result.createdAt = createdAt;
+    }
+    if (active != null) {
+      _result.active = active;
+    }
+    return _result;
+  }
+  factory NodeInfo.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory NodeInfo.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  NodeInfo clone() => NodeInfo()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  NodeInfo copyWith(void Function(NodeInfo) updates) => super.copyWith((message) => updates(message as NodeInfo)) as NodeInfo; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static NodeInfo create() => NodeInfo._();
+  NodeInfo createEmptyInstance() => create();
+  static $pb.PbList<NodeInfo> createRepeated() => $pb.PbList<NodeInfo>();
+  @$core.pragma('dart2js:noInline')
+  static NodeInfo getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<NodeInfo>(create);
+  static NodeInfo? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get name => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set name($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasName() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearName() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get ip => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set ip($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasIp() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearIp() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.int get port => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set port($core.int v) { $_setSignedInt32(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasPort() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearPort() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $fixnum.Int64 get createdAt => $_getI64(3);
+  @$pb.TagNumber(4)
+  set createdAt($fixnum.Int64 v) { $_setInt64(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasCreatedAt() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearCreatedAt() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.bool get active => $_getBF(4);
+  @$pb.TagNumber(5)
+  set active($core.bool v) { $_setBool(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasActive() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearActive() => clearField(5);
+}
+
+class MembersUpdate extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'MembersUpdate', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'protocol'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Name', protoName: 'Name')
+    ..pc<NodeInfo>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'NodeMembers', $pb.PbFieldType.PM, protoName: 'NodeMembers', subBuilder: NodeInfo.create)
+    ..hasRequiredFields = false
+  ;
+
+  MembersUpdate._() : super();
+  factory MembersUpdate({
+    $core.String? name,
+    $core.Iterable<NodeInfo>? nodeMembers,
+  }) {
+    final _result = create();
+    if (name != null) {
+      _result.name = name;
+    }
+    if (nodeMembers != null) {
+      _result.nodeMembers.addAll(nodeMembers);
+    }
+    return _result;
+  }
+  factory MembersUpdate.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory MembersUpdate.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  MembersUpdate clone() => MembersUpdate()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  MembersUpdate copyWith(void Function(MembersUpdate) updates) => super.copyWith((message) => updates(message as MembersUpdate)) as MembersUpdate; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static MembersUpdate create() => MembersUpdate._();
+  MembersUpdate createEmptyInstance() => create();
+  static $pb.PbList<MembersUpdate> createRepeated() => $pb.PbList<MembersUpdate>();
+  @$core.pragma('dart2js:noInline')
+  static MembersUpdate getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<MembersUpdate>(create);
+  static MembersUpdate? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get name => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set name($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasName() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearName() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.List<NodeInfo> get nodeMembers => $_getList(1);
+}
+
+class RequestJoinNode extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'RequestJoinNode', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'protocol'), createEmptyInstance: create)
+    ..aOM<NodeInfo>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'From', protoName: 'From', subBuilder: NodeInfo.create)
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ToAddr', protoName: 'ToAddr')
+    ..hasRequiredFields = false
+  ;
+
+  RequestJoinNode._() : super();
+  factory RequestJoinNode({
+    NodeInfo? from,
+    $core.String? toAddr,
+  }) {
+    final _result = create();
+    if (from != null) {
+      _result.from = from;
+    }
+    if (toAddr != null) {
+      _result.toAddr = toAddr;
+    }
+    return _result;
+  }
+  factory RequestJoinNode.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RequestJoinNode.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  RequestJoinNode clone() => RequestJoinNode()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  RequestJoinNode copyWith(void Function(RequestJoinNode) updates) => super.copyWith((message) => updates(message as RequestJoinNode)) as RequestJoinNode; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static RequestJoinNode create() => RequestJoinNode._();
+  RequestJoinNode createEmptyInstance() => create();
+  static $pb.PbList<RequestJoinNode> createRepeated() => $pb.PbList<RequestJoinNode>();
+  @$core.pragma('dart2js:noInline')
+  static RequestJoinNode getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RequestJoinNode>(create);
+  static RequestJoinNode? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  NodeInfo get from => $_getN(0);
+  @$pb.TagNumber(1)
+  set from(NodeInfo v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasFrom() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearFrom() => clearField(1);
+  @$pb.TagNumber(1)
+  NodeInfo ensureFrom() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $core.String get toAddr => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set toAddr($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasToAddr() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearToAddr() => clearField(2);
 }
 

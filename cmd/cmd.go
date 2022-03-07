@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"angkorim/internal/server"
+	"angkorim/internal/core"
 	"angkorim/internal/store"
 	"angkorim/pkg/log"
 	"fmt"
@@ -9,13 +9,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/ulule/limiter/v3"
-	mgin "github.com/ulule/limiter/v3/drivers/middleware/gin"
-	"github.com/ulule/limiter/v3/drivers/store/memory"
 )
 
 var (
@@ -34,9 +30,13 @@ var (
 			setup()
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return run()
+			return func() error {
+				go server.RunCluster()
+				return server.RunWS(cors)
+			}()
 		},
 	}
+	server = &core.Server{}
 )
 
 func init() {
@@ -58,6 +58,7 @@ func setup() {
 	zerolog.SetGlobalLevel(zerolog.Level(loglevel))
 	log.Init()
 	//2.Set up configuration
+	viper.SetConfigType("yaml")
 	viper.SetConfigFile(conf)
 	content, err := ioutil.ReadFile(conf)
 	if err != nil {
@@ -71,19 +72,4 @@ func setup() {
 	//3.Set up database connection
 	store.Setup()
 
-}
-
-func run() error {
-	rate, err := limiter.NewRateFromFormatted("10000-H")
-	if err != nil {
-		panic(err)
-	}
-	store := memory.NewStore()
-	instance := limiter.New(store, rate, limiter.WithTrustForwardHeader(true))
-	middleware := mgin.NewMiddleware(instance)
-	engine := gin.Default()
-	engine.ForwardedByClientIP = true
-	engine.Use(middleware)
-	server.SetupRoute(engine, cors)
-	return engine.Run("0.0.0.0:" + viper.GetString("base.port"))
 }

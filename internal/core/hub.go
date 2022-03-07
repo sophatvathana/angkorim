@@ -1,13 +1,14 @@
-package server
+package core
 
 import (
+	"angkorim/pkg/log"
 	"angkorim/pkg/protocol"
 	"sync"
 
 	"google.golang.org/protobuf/proto"
 )
 
-type Clients map[string]*Client
+type Clients map[string]*sync.Map
 type Hub struct {
 	clients Clients
 	sLock   sync.RWMutex
@@ -27,7 +28,10 @@ func NewHub() *Hub {
 
 func (h *Hub) AddClient(c *Client) {
 	h.sLock.Lock()
-	h.clients[c.UserId] = c
+	if h.clients[c.UserId] == nil {
+		h.clients[c.UserId] = &sync.Map{}
+	}
+	h.clients[c.UserId].Store(c.DeviceId, c)
 	h.sLock.Unlock()
 }
 
@@ -40,7 +44,10 @@ func (h *Hub) Subscribe(c *Client, topics ...string) {
 			h.topics[topic] = Clients{}
 		}
 		c.AddTopic(topic)
-		h.topics[topic][c.UserId] = c
+		if h.topics[topic][c.UserId] == nil {
+			h.topics[topic][c.UserId] = &sync.Map{}
+		}
+		h.topics[topic][c.UserId].Store(c.DeviceId, c)
 	}
 
 }
@@ -72,10 +79,15 @@ func (b *Hub) Broadcast(payload proto.Message, topics ...string) {
 			continue
 		}
 		b.tLock.RLock()
-		for _, s := range b.topics[topic] {
-			go (func(s *Client) {
-				s.Send(protocol.Command_CMD_SEND_MSG, payload, nil)
-			})(s)
+		for u, s := range b.topics[topic] {
+			log.Info(u)
+			s.Range(func(key, value interface{}) bool {
+				client := value.(*Client)
+				go (func(s *Client) {
+					s.Send(protocol.Command_CMD_SEND_MSG, payload, nil)
+				})(client)
+				return true
+			})
 		}
 		b.tLock.RUnlock()
 	}
@@ -89,11 +101,11 @@ func (b *Hub) Subscribers(topic string) int {
 
 func (b *Hub) GetTopics() []string {
 	b.tLock.RLock()
-	brokerTopics := b.topics
+	hubTopics := b.topics
 	b.tLock.RUnlock()
 
 	topics := []string{}
-	for topic := range brokerTopics {
+	for topic := range hubTopics {
 		topics = append(topics, topic)
 	}
 

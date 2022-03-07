@@ -15,6 +15,7 @@ enum Command {
   CMD_SIGNIN = 1;
   CMD_SEND_MSG = 2;
   CMD_SUBSCRIBE_TOPIC = 3;
+  CMD_CLUSTER_UPDATE_MEMBERS = 4;
 }
 
 enum DeviceType {
@@ -58,7 +59,7 @@ message Response {
 message SignInRequest {
   string phone_number = 1; 
   string code = 2;  
-  int64 device_id = 3; 
+  string device_id = 3; 
 }
 
 message SignInResponse {  
@@ -119,6 +120,26 @@ message SimpleMessageRequest {
 message SimpleMessageResponse {
   string message = 1;
 }
+
+// Cluster 
+message NodeInfo {
+  string Name = 1;
+	string Ip = 2;
+	int32 Port = 3; 
+	int64 CreatedAt = 4;
+	bool Active = 5; 
+}
+
+message MembersUpdate {
+  string Name  = 1;     
+	repeated NodeInfo NodeMembers = 2;
+}
+
+message RequestJoinNode {
+  NodeInfo From = 1;
+  string ToAddr = 2;
+}
+
 
 service SessionService {
   //rpc RegisterDevice(RegisterDeviceRequest) returns (RegisterDeviceResponse);

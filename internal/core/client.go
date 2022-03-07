@@ -1,4 +1,4 @@
-package server
+package core
 
 import (
 	"angkorim/pkg/log"
@@ -102,6 +102,10 @@ func (c *Client) SignIn(req *protocol.Request) {
 		Token: "",
 	}
 	c.Send(protocol.Command_CMD_SIGNIN, res, err)
+	c.UserId = reqPayload.PhoneNumber
+	c.DeviceId = reqPayload.DeviceId
+	addr := c.WS.RemoteAddr().String()
+	print(addr)
 	c.hub.AddClient(c)
 }
 

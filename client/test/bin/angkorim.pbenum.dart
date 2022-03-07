@@ -31,12 +31,14 @@ class Command extends $pb.ProtobufEnum {
   static const Command CMD_SIGNIN = Command._(1, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'CMD_SIGNIN');
   static const Command CMD_SEND_MSG = Command._(2, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'CMD_SEND_MSG');
   static const Command CMD_SUBSCRIBE_TOPIC = Command._(3, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'CMD_SUBSCRIBE_TOPIC');
+  static const Command CMD_CLUSTER_UPDATE_MEMBERS = Command._(4, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'CMD_CLUSTER_UPDATE_MEMBERS');
 
   static const $core.List<Command> values = <Command> [
     CMD_UNKNOWN,
     CMD_SIGNIN,
     CMD_SEND_MSG,
     CMD_SUBSCRIBE_TOPIC,
+    CMD_CLUSTER_UPDATE_MEMBERS,
   ];
 
   static final $core.Map<$core.int, Command> _byValue = $pb.ProtobufEnum.initByValue(values);

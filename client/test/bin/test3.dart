@@ -13,7 +13,7 @@ main() {
     if (ws.readyState == WebSocket.open) {
       SignInRequest req = SignInRequest();
       req.phoneNumber = "855966040895";
-      req.deviceId = "device-a";
+      req.deviceId = "device-b";
       ws.add(encode(Command.CMD_SIGNIN,req));  
       ws.add(encode(Command.CMD_SUBSCRIBE_TOPIC,SubscribeRequest(topic: "A")));  
       // ws.add(encode(Command.CMD_SEND_MSG,SimpleMessageRequest(topic: "A", message: "Hello world"))); 
