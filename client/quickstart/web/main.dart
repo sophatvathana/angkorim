@@ -4,7 +4,8 @@ import 'dart:typed_data';
 import 'angkorim.pb.dart';
 import 'package:protobuf/protobuf.dart';
 
-var websocket = WebSocket("ws://0.0.0.0:9523/")..binaryType = 'arraybuffer';
+var websocket = WebSocket("wss://angkorim.apsaralab.com/")
+  ..binaryType = 'arraybuffer';
 void main() {
   querySelector("#selectUsername")?.onClick.listen((event) {
     print("username!");

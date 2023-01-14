@@ -11,6 +11,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/ulule/limiter/v3"
+	mgin "github.com/ulule/limiter/v3/drivers/middleware/gin"
+	"github.com/ulule/limiter/v3/drivers/store/memory"
 
 	"github.com/panjf2000/gnet/v2"
 	"github.com/panjf2000/gnet/v2/pkg/logging"
@@ -95,7 +98,7 @@ func (wss *Server) OnClose(c gnet.Conn, err error) (action gnet.Action) {
 	atomic.AddInt64(&wss.connected, -1)
 	wss.client.Close()
 	log.Info("conn[%v] disconnected", c.RemoteAddr().String())
-	return gnet.None
+	return gnet.Close
 }
 
 func (wss *Server) OnTraffic(c gnet.Conn) (action gnet.Action) {
@@ -148,23 +151,24 @@ func (wss *Server) OnTick() (delay time.Duration, action gnet.Action) {
 }
 
 func (s *Server) RunWS(enableCore bool) error {
-
-	// Example command: go run echo.go --port 9000 --multicore=true
-
 	echo := &Server{addr: fmt.Sprintf("tcp://0.0.0.0:%s", viper.GetString("base.port")), multicore: true}
 	return gnet.Run(echo, echo.addr, gnet.WithMulticore(echo.multicore))
-	// rate, err := limiter.NewRateFromFormatted("10000-H")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// store := memory.NewStore()
-	// instance := limiter.New(store, rate, limiter.WithTrustForwardHeader(true))
-	// middleware := mgin.NewMiddleware(instance)
-	// engine := gin.Default()
-	// engine.ForwardedByClientIP = true
-	// engine.Use(middleware)
-	// SetupRoute(engine, enableCore, s)
-	// return engine.Run("0.0.0.0:" + viper.GetString("base.port"))
+
+}
+
+func (s *Server) RunHttp() error {
+	rate, err := limiter.NewRateFromFormatted("10000-H")
+	if err != nil {
+		panic(err)
+	}
+	store := memory.NewStore()
+	instance := limiter.New(store, rate, limiter.WithTrustForwardHeader(true))
+	middleware := mgin.NewMiddleware(instance)
+	engine := gin.Default()
+	engine.ForwardedByClientIP = true
+	engine.Use(middleware)
+	SetupRoute(engine, true, s)
+	return engine.Run("0.0.0.0:" + viper.GetString("base.port"))
 }
 
 func RecoverPanic() {

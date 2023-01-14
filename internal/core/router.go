@@ -23,12 +23,9 @@ func SetupRoute(e *gin.Engine, cors bool, server *Server) {
 	//#                              #
 	//################################
 	api := e.Group("/api")
-	api.GET("/ws", func(c *gin.Context) {
-		server.HandleConnections(
-			c.Writer,
-			c.Request,
-			c,
-			c.Request.Header.Get("X-Correlation-ID"),
-		)
+	api.GET("/helloworld", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"msg": "helloworld",
+		})
 	})
 }
