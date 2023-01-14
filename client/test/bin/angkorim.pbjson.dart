@@ -84,6 +84,19 @@ const ReceiverType$json = const {
 
 /// Descriptor for `ReceiverType`. Decode as a `google.protobuf.EnumDescriptorProto`.
 final $typed_data.Uint8List receiverTypeDescriptor = $convert.base64Decode('CgxSZWNlaXZlclR5cGUSEAoMUkVDRVZfVU5LT1dOEAASDQoJUkVDRVZfUDJQEAESDwoLUkVDRVZfR1JPVVAQAhIRCg1SRUNFVl9DSEFOTkVMEAMSFQoRUkVDRVZfU01BTExfR1JPVVAQBA==');
+@$core.Deprecated('Use nodeStatusDescriptor instead')
+const NodeStatus$json = const {
+  '1': 'NodeStatus',
+  '2': const [
+    const {'1': 'UNKNOWN_NODE', '2': 0},
+    const {'1': 'ALIVE_NODE', '2': 4096},
+    const {'1': 'SUSPECTED_NODE', '2': 8192},
+    const {'1': 'SUSPECTED_DEAD', '2': 12288},
+  ],
+};
+
+/// Descriptor for `NodeStatus`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List nodeStatusDescriptor = $convert.base64Decode('CgpOb2RlU3RhdHVzEhAKDFVOS05PV05fTk9ERRAAEg8KCkFMSVZFX05PREUQgCASEwoOU1VTUEVDVEVEX05PREUQgEASEwoOU1VTUEVDVEVEX0RFQUQQgGA=');
 @$core.Deprecated('Use emptyMsgDescriptor instead')
 const EmptyMsg$json = const {
   '1': 'EmptyMsg',
@@ -281,3 +294,59 @@ const RequestJoinNode$json = const {
 
 /// Descriptor for `RequestJoinNode`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List requestJoinNodeDescriptor = $convert.base64Decode('Cg9SZXF1ZXN0Sm9pbk5vZGUSJgoERnJvbRgBIAEoCzISLnByb3RvY29sLk5vZGVJbmZvUgRGcm9tEhYKBlRvQWRkchgCIAEoCVIGVG9BZGRy');
+@$core.Deprecated('Use requestPushDescriptor instead')
+const RequestPush$json = const {
+  '1': 'RequestPush',
+};
+
+/// Descriptor for `RequestPush`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List requestPushDescriptor = $convert.base64Decode('CgtSZXF1ZXN0UHVzaA==');
+@$core.Deprecated('Use responsePushDescriptor instead')
+const ResponsePush$json = const {
+  '1': 'ResponsePush',
+};
+
+/// Descriptor for `ResponsePush`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List responsePushDescriptor = $convert.base64Decode('CgxSZXNwb25zZVB1c2g=');
+@$core.Deprecated('Use requestPullDescriptor instead')
+const RequestPull$json = const {
+  '1': 'RequestPull',
+};
+
+/// Descriptor for `RequestPull`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List requestPullDescriptor = $convert.base64Decode('CgtSZXF1ZXN0UHVsbA==');
+@$core.Deprecated('Use responsePullDescriptor instead')
+const ResponsePull$json = const {
+  '1': 'ResponsePull',
+};
+
+/// Descriptor for `ResponsePull`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List responsePullDescriptor = $convert.base64Decode('CgxSZXNwb25zZVB1bGw=');
+@$core.Deprecated('Use requestPushPullDescriptor instead')
+const RequestPushPull$json = const {
+  '1': 'RequestPushPull',
+};
+
+/// Descriptor for `RequestPushPull`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List requestPushPullDescriptor = $convert.base64Decode('Cg9SZXF1ZXN0UHVzaFB1bGw=');
+@$core.Deprecated('Use responsePushPullDescriptor instead')
+const ResponsePushPull$json = const {
+  '1': 'ResponsePushPull',
+};
+
+/// Descriptor for `ResponsePushPull`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List responsePushPullDescriptor = $convert.base64Decode('ChBSZXNwb25zZVB1c2hQdWxs');
+@$core.Deprecated('Use requestHelloDescriptor instead')
+const RequestHello$json = const {
+  '1': 'RequestHello',
+};
+
+/// Descriptor for `RequestHello`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List requestHelloDescriptor = $convert.base64Decode('CgxSZXF1ZXN0SGVsbG8=');
+@$core.Deprecated('Use responseHelloDescriptor instead')
+const ResponseHello$json = const {
+  '1': 'ResponseHello',
+};
+
+/// Descriptor for `ResponseHello`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List responseHelloDescriptor = $convert.base64Decode('Cg1SZXNwb25zZUhlbGxv');

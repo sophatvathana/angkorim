@@ -7,17 +7,21 @@ require (
 	github.com/blevesearch/bleve v1.0.14
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.7
+	github.com/gobwas/ws v1.1.0
 	github.com/google/logger v1.1.1
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/kataras/i18n v0.0.6
 	github.com/lithammer/shortuuid/v4 v4.0.0
+	github.com/panjf2000/gnet/v2 v2.2.2 // indirect
 	github.com/rs/zerolog v1.26.1
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.10.1
 	github.com/ulule/limiter v2.2.2+incompatible
 	github.com/ulule/limiter/v3 v3.9.0
-	go.uber.org/zap v1.17.0
+	go.uber.org/multierr v1.9.0 // indirect
+	go.uber.org/zap v1.24.0
+	golang.org/x/sys v0.4.0 // indirect
 	golang.org/x/text v0.3.7
 	google.golang.org/grpc v1.43.0
 	google.golang.org/protobuf v1.27.1

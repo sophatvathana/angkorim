@@ -6,8 +6,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gobwas/ws"
+	"github.com/gobwas/ws/wsutil"
 	"github.com/google/uuid"
-	"github.com/gorilla/websocket"
+	"github.com/panjf2000/gnet/v2"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 )
@@ -17,7 +19,8 @@ type Client struct {
 	ConType   int8
 	WSMutex   sync.RWMutex
 	lock      sync.RWMutex
-	WS        *websocket.Conn
+	WS        gnet.Conn
+	wsOpCode  ws.OpCode
 	UserId    string
 	DeviceId  string
 	topics    map[string]bool
@@ -26,7 +29,7 @@ type Client struct {
 	closed    bool
 }
 
-func NewClient(ws *websocket.Conn, hub *Hub) *Client {
+func NewClient(ws gnet.Conn, hub *Hub) *Client {
 	return &Client{
 		ConType:   1, //@TODO TCP
 		WSMutex:   sync.RWMutex{},
@@ -41,10 +44,14 @@ func NewClient(ws *websocket.Conn, hub *Hub) *Client {
 	}
 }
 
-func (c *Client) Write(bytes []byte) error {
+func (c *Client) Write(message []byte) error {
 	c.WSMutex.Lock()
 	defer c.WSMutex.Unlock()
-	return c.WS.WriteMessage(websocket.BinaryMessage, bytes)
+	// _, err := c.WS.Write(message)
+	err := wsutil.WriteServerMessage(c.WS, c.wsOpCode, message)
+	// return err
+	// return c.WS.WriteMessage(websocket.BinaryMessage, bytes)
+	return err
 }
 
 func (c *Client) HandleMessage(bytes []byte) {

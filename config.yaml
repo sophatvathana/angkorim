@@ -1,7 +1,7 @@
 appName: AngkorIm
 mode: debug
 base:
-  port: 9522
+  port: 9523
   url: http://localhost:4000
   static_path: data/www
   locales_path: locales
@@ -35,5 +35,3 @@ clusters:
     # - name: node2
     #   ip: localhost
     #   port: 9002
-  
-

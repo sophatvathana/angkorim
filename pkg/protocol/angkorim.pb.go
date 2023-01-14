@@ -9,6 +9,8 @@ package protocol
 import (
 	context "context"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -326,6 +328,58 @@ func (x ReceiverType) Number() protoreflect.EnumNumber {
 // Deprecated: Use ReceiverType.Descriptor instead.
 func (ReceiverType) EnumDescriptor() ([]byte, []int) {
 	return file_angkorim_proto_rawDescGZIP(), []int{5}
+}
+
+type NodeStatus int32
+
+const (
+	NodeStatus_UNKNOWN_NODE   NodeStatus = 0
+	NodeStatus_ALIVE_NODE     NodeStatus = 4096
+	NodeStatus_SUSPECTED_NODE NodeStatus = 8192
+	NodeStatus_SUSPECTED_DEAD NodeStatus = 12288
+)
+
+// Enum value maps for NodeStatus.
+var (
+	NodeStatus_name = map[int32]string{
+		0:     "UNKNOWN_NODE",
+		4096:  "ALIVE_NODE",
+		8192:  "SUSPECTED_NODE",
+		12288: "SUSPECTED_DEAD",
+	}
+	NodeStatus_value = map[string]int32{
+		"UNKNOWN_NODE":   0,
+		"ALIVE_NODE":     4096,
+		"SUSPECTED_NODE": 8192,
+		"SUSPECTED_DEAD": 12288,
+	}
+)
+
+func (x NodeStatus) Enum() *NodeStatus {
+	p := new(NodeStatus)
+	*p = x
+	return p
+}
+
+func (x NodeStatus) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (NodeStatus) Descriptor() protoreflect.EnumDescriptor {
+	return file_angkorim_proto_enumTypes[6].Descriptor()
+}
+
+func (NodeStatus) Type() protoreflect.EnumType {
+	return &file_angkorim_proto_enumTypes[6]
+}
+
+func (x NodeStatus) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use NodeStatus.Descriptor instead.
+func (NodeStatus) EnumDescriptor() ([]byte, []int) {
+	return file_angkorim_proto_rawDescGZIP(), []int{6}
 }
 
 type EmptyMsg struct {
@@ -1169,7 +1223,6 @@ func (x *SimpleMessageResponse) GetMessage() string {
 	return ""
 }
 
-// Cluster
 type NodeInfo struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1359,6 +1412,310 @@ func (x *RequestJoinNode) GetToAddr() string {
 	return ""
 }
 
+type RequestPush struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *RequestPush) Reset() {
+	*x = RequestPush{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_angkorim_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RequestPush) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RequestPush) ProtoMessage() {}
+
+func (x *RequestPush) ProtoReflect() protoreflect.Message {
+	mi := &file_angkorim_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RequestPush.ProtoReflect.Descriptor instead.
+func (*RequestPush) Descriptor() ([]byte, []int) {
+	return file_angkorim_proto_rawDescGZIP(), []int{17}
+}
+
+type ResponsePush struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ResponsePush) Reset() {
+	*x = ResponsePush{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_angkorim_proto_msgTypes[18]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ResponsePush) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResponsePush) ProtoMessage() {}
+
+func (x *ResponsePush) ProtoReflect() protoreflect.Message {
+	mi := &file_angkorim_proto_msgTypes[18]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResponsePush.ProtoReflect.Descriptor instead.
+func (*ResponsePush) Descriptor() ([]byte, []int) {
+	return file_angkorim_proto_rawDescGZIP(), []int{18}
+}
+
+type RequestPull struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *RequestPull) Reset() {
+	*x = RequestPull{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_angkorim_proto_msgTypes[19]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RequestPull) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RequestPull) ProtoMessage() {}
+
+func (x *RequestPull) ProtoReflect() protoreflect.Message {
+	mi := &file_angkorim_proto_msgTypes[19]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RequestPull.ProtoReflect.Descriptor instead.
+func (*RequestPull) Descriptor() ([]byte, []int) {
+	return file_angkorim_proto_rawDescGZIP(), []int{19}
+}
+
+type ResponsePull struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ResponsePull) Reset() {
+	*x = ResponsePull{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_angkorim_proto_msgTypes[20]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ResponsePull) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResponsePull) ProtoMessage() {}
+
+func (x *ResponsePull) ProtoReflect() protoreflect.Message {
+	mi := &file_angkorim_proto_msgTypes[20]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResponsePull.ProtoReflect.Descriptor instead.
+func (*ResponsePull) Descriptor() ([]byte, []int) {
+	return file_angkorim_proto_rawDescGZIP(), []int{20}
+}
+
+type RequestPushPull struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *RequestPushPull) Reset() {
+	*x = RequestPushPull{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_angkorim_proto_msgTypes[21]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RequestPushPull) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RequestPushPull) ProtoMessage() {}
+
+func (x *RequestPushPull) ProtoReflect() protoreflect.Message {
+	mi := &file_angkorim_proto_msgTypes[21]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RequestPushPull.ProtoReflect.Descriptor instead.
+func (*RequestPushPull) Descriptor() ([]byte, []int) {
+	return file_angkorim_proto_rawDescGZIP(), []int{21}
+}
+
+type ResponsePushPull struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ResponsePushPull) Reset() {
+	*x = ResponsePushPull{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_angkorim_proto_msgTypes[22]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ResponsePushPull) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResponsePushPull) ProtoMessage() {}
+
+func (x *ResponsePushPull) ProtoReflect() protoreflect.Message {
+	mi := &file_angkorim_proto_msgTypes[22]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResponsePushPull.ProtoReflect.Descriptor instead.
+func (*ResponsePushPull) Descriptor() ([]byte, []int) {
+	return file_angkorim_proto_rawDescGZIP(), []int{22}
+}
+
+type RequestHello struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *RequestHello) Reset() {
+	*x = RequestHello{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_angkorim_proto_msgTypes[23]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RequestHello) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RequestHello) ProtoMessage() {}
+
+func (x *RequestHello) ProtoReflect() protoreflect.Message {
+	mi := &file_angkorim_proto_msgTypes[23]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RequestHello.ProtoReflect.Descriptor instead.
+func (*RequestHello) Descriptor() ([]byte, []int) {
+	return file_angkorim_proto_rawDescGZIP(), []int{23}
+}
+
+type ResponseHello struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ResponseHello) Reset() {
+	*x = ResponseHello{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_angkorim_proto_msgTypes[24]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ResponseHello) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResponseHello) ProtoMessage() {}
+
+func (x *ResponseHello) ProtoReflect() protoreflect.Message {
+	mi := &file_angkorim_proto_msgTypes[24]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResponseHello.ProtoReflect.Descriptor instead.
+func (*ResponseHello) Descriptor() ([]byte, []int) {
+	return file_angkorim_proto_rawDescGZIP(), []int{24}
+}
+
 var File_angkorim_proto protoreflect.FileDescriptor
 
 var file_angkorim_proto_rawDesc = []byte{
@@ -1471,42 +1828,61 @@ var file_angkorim_proto_rawDesc = []byte{
 	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c,
 	0x2e, 0x4e, 0x6f, 0x64, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x46, 0x72, 0x6f, 0x6d, 0x12,
 	0x16, 0x0a, 0x06, 0x54, 0x6f, 0x41, 0x64, 0x64, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x06, 0x54, 0x6f, 0x41, 0x64, 0x64, 0x72, 0x2a, 0x4b, 0x0a, 0x0c, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x11, 0x0a, 0x0d, 0x55, 0x4e, 0x4b, 0x4e, 0x4f,
-	0x57, 0x4e, 0x5f, 0x45, 0x52, 0x52, 0x4f, 0x52, 0x10, 0x00, 0x12, 0x12, 0x0a, 0x0d, 0x52, 0x45,
-	0x51, 0x55, 0x45, 0x53, 0x54, 0x5f, 0x45, 0x52, 0x52, 0x4f, 0x52, 0x10, 0x80, 0x20, 0x12, 0x14,
-	0x0a, 0x0f, 0x52, 0x45, 0x51, 0x55, 0x45, 0x53, 0x54, 0x5f, 0x53, 0x55, 0x43, 0x43, 0x45, 0x53,
-	0x53, 0x10, 0x80, 0x40, 0x2a, 0x75, 0x0a, 0x07, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12,
-	0x0f, 0x0a, 0x0b, 0x43, 0x4d, 0x44, 0x5f, 0x55, 0x4e, 0x4b, 0x4e, 0x4f, 0x57, 0x4e, 0x10, 0x00,
-	0x12, 0x0e, 0x0a, 0x0a, 0x43, 0x4d, 0x44, 0x5f, 0x53, 0x49, 0x47, 0x4e, 0x49, 0x4e, 0x10, 0x01,
-	0x12, 0x10, 0x0a, 0x0c, 0x43, 0x4d, 0x44, 0x5f, 0x53, 0x45, 0x4e, 0x44, 0x5f, 0x4d, 0x53, 0x47,
-	0x10, 0x02, 0x12, 0x17, 0x0a, 0x13, 0x43, 0x4d, 0x44, 0x5f, 0x53, 0x55, 0x42, 0x53, 0x43, 0x52,
-	0x49, 0x42, 0x45, 0x5f, 0x54, 0x4f, 0x50, 0x49, 0x43, 0x10, 0x03, 0x12, 0x1e, 0x0a, 0x1a, 0x43,
-	0x4d, 0x44, 0x5f, 0x43, 0x4c, 0x55, 0x53, 0x54, 0x45, 0x52, 0x5f, 0x55, 0x50, 0x44, 0x41, 0x54,
-	0x45, 0x5f, 0x4d, 0x45, 0x4d, 0x42, 0x45, 0x52, 0x53, 0x10, 0x04, 0x2a, 0x41, 0x0a, 0x0a, 0x44,
-	0x65, 0x76, 0x69, 0x63, 0x65, 0x54, 0x79, 0x70, 0x65, 0x12, 0x07, 0x0a, 0x03, 0x57, 0x45, 0x42,
-	0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x41, 0x4e, 0x44, 0x52, 0x49, 0x4f, 0x44, 0x10, 0x01, 0x12,
-	0x07, 0x0a, 0x03, 0x49, 0x4f, 0x53, 0x10, 0x02, 0x12, 0x07, 0x0a, 0x03, 0x43, 0x4c, 0x49, 0x10,
-	0x03, 0x12, 0x0b, 0x0a, 0x07, 0x55, 0x4e, 0x4b, 0x4e, 0x4f, 0x57, 0x4e, 0x10, 0x04, 0x2a, 0x2d,
-	0x0a, 0x0b, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0f, 0x0a,
-	0x0b, 0x4d, 0x53, 0x47, 0x5f, 0x55, 0x4e, 0x4b, 0x4e, 0x4f, 0x57, 0x4e, 0x10, 0x00, 0x12, 0x0d,
-	0x0a, 0x08, 0x4d, 0x53, 0x47, 0x5f, 0x54, 0x45, 0x58, 0x54, 0x10, 0x80, 0x20, 0x2a, 0x29, 0x0a,
-	0x0d, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x0d,
-	0x0a, 0x09, 0x44, 0x45, 0x4c, 0x49, 0x56, 0x45, 0x52, 0x45, 0x44, 0x10, 0x00, 0x12, 0x09, 0x0a,
-	0x04, 0x53, 0x45, 0x45, 0x4e, 0x10, 0x80, 0x02, 0x2a, 0x6a, 0x0a, 0x0c, 0x52, 0x65, 0x63, 0x65,
-	0x69, 0x76, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x10, 0x0a, 0x0c, 0x52, 0x45, 0x43, 0x45,
-	0x56, 0x5f, 0x55, 0x4e, 0x4b, 0x4f, 0x57, 0x4e, 0x10, 0x00, 0x12, 0x0d, 0x0a, 0x09, 0x52, 0x45,
-	0x43, 0x45, 0x56, 0x5f, 0x50, 0x32, 0x50, 0x10, 0x01, 0x12, 0x0f, 0x0a, 0x0b, 0x52, 0x45, 0x43,
-	0x45, 0x56, 0x5f, 0x47, 0x52, 0x4f, 0x55, 0x50, 0x10, 0x02, 0x12, 0x11, 0x0a, 0x0d, 0x52, 0x45,
-	0x43, 0x45, 0x56, 0x5f, 0x43, 0x48, 0x41, 0x4e, 0x4e, 0x45, 0x4c, 0x10, 0x03, 0x12, 0x15, 0x0a,
-	0x11, 0x52, 0x45, 0x43, 0x45, 0x56, 0x5f, 0x53, 0x4d, 0x41, 0x4c, 0x4c, 0x5f, 0x47, 0x52, 0x4f,
-	0x55, 0x50, 0x10, 0x04, 0x32, 0x10, 0x0a, 0x0e, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x53,
-	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x32, 0x10, 0x0a, 0x0e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67,
-	0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x32, 0x0d, 0x0a, 0x0b, 0x55, 0x73, 0x65, 0x72,
-	0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x32, 0x0d, 0x0a, 0x0b, 0x53, 0x79, 0x6e, 0x63, 0x53,
-	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x42, 0x18, 0x5a, 0x16, 0x61, 0x6e, 0x67, 0x6b, 0x6f, 0x72,
-	0x69, 0x6d, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2f,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x06, 0x54, 0x6f, 0x41, 0x64, 0x64, 0x72, 0x22, 0x0d, 0x0a, 0x0b, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x50, 0x75, 0x73, 0x68, 0x22, 0x0e, 0x0a, 0x0c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x50, 0x75, 0x73, 0x68, 0x22, 0x0d, 0x0a, 0x0b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x50, 0x75, 0x6c, 0x6c, 0x22, 0x0e, 0x0a, 0x0c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x50, 0x75, 0x6c, 0x6c, 0x22, 0x11, 0x0a, 0x0f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x50, 0x75, 0x73, 0x68, 0x50, 0x75, 0x6c, 0x6c, 0x22, 0x12, 0x0a, 0x10, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x50, 0x75, 0x73, 0x68, 0x50, 0x75, 0x6c, 0x6c, 0x22, 0x0e, 0x0a, 0x0c,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x22, 0x0f, 0x0a, 0x0d,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2a, 0x4b, 0x0a,
+	0x0c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x11, 0x0a,
+	0x0d, 0x55, 0x4e, 0x4b, 0x4e, 0x4f, 0x57, 0x4e, 0x5f, 0x45, 0x52, 0x52, 0x4f, 0x52, 0x10, 0x00,
+	0x12, 0x12, 0x0a, 0x0d, 0x52, 0x45, 0x51, 0x55, 0x45, 0x53, 0x54, 0x5f, 0x45, 0x52, 0x52, 0x4f,
+	0x52, 0x10, 0x80, 0x20, 0x12, 0x14, 0x0a, 0x0f, 0x52, 0x45, 0x51, 0x55, 0x45, 0x53, 0x54, 0x5f,
+	0x53, 0x55, 0x43, 0x43, 0x45, 0x53, 0x53, 0x10, 0x80, 0x40, 0x2a, 0x75, 0x0a, 0x07, 0x43, 0x6f,
+	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12, 0x0f, 0x0a, 0x0b, 0x43, 0x4d, 0x44, 0x5f, 0x55, 0x4e, 0x4b,
+	0x4e, 0x4f, 0x57, 0x4e, 0x10, 0x00, 0x12, 0x0e, 0x0a, 0x0a, 0x43, 0x4d, 0x44, 0x5f, 0x53, 0x49,
+	0x47, 0x4e, 0x49, 0x4e, 0x10, 0x01, 0x12, 0x10, 0x0a, 0x0c, 0x43, 0x4d, 0x44, 0x5f, 0x53, 0x45,
+	0x4e, 0x44, 0x5f, 0x4d, 0x53, 0x47, 0x10, 0x02, 0x12, 0x17, 0x0a, 0x13, 0x43, 0x4d, 0x44, 0x5f,
+	0x53, 0x55, 0x42, 0x53, 0x43, 0x52, 0x49, 0x42, 0x45, 0x5f, 0x54, 0x4f, 0x50, 0x49, 0x43, 0x10,
+	0x03, 0x12, 0x1e, 0x0a, 0x1a, 0x43, 0x4d, 0x44, 0x5f, 0x43, 0x4c, 0x55, 0x53, 0x54, 0x45, 0x52,
+	0x5f, 0x55, 0x50, 0x44, 0x41, 0x54, 0x45, 0x5f, 0x4d, 0x45, 0x4d, 0x42, 0x45, 0x52, 0x53, 0x10,
+	0x04, 0x2a, 0x41, 0x0a, 0x0a, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x54, 0x79, 0x70, 0x65, 0x12,
+	0x07, 0x0a, 0x03, 0x57, 0x45, 0x42, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x41, 0x4e, 0x44, 0x52,
+	0x49, 0x4f, 0x44, 0x10, 0x01, 0x12, 0x07, 0x0a, 0x03, 0x49, 0x4f, 0x53, 0x10, 0x02, 0x12, 0x07,
+	0x0a, 0x03, 0x43, 0x4c, 0x49, 0x10, 0x03, 0x12, 0x0b, 0x0a, 0x07, 0x55, 0x4e, 0x4b, 0x4e, 0x4f,
+	0x57, 0x4e, 0x10, 0x04, 0x2a, 0x2d, 0x0a, 0x0b, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x54,
+	0x79, 0x70, 0x65, 0x12, 0x0f, 0x0a, 0x0b, 0x4d, 0x53, 0x47, 0x5f, 0x55, 0x4e, 0x4b, 0x4e, 0x4f,
+	0x57, 0x4e, 0x10, 0x00, 0x12, 0x0d, 0x0a, 0x08, 0x4d, 0x53, 0x47, 0x5f, 0x54, 0x45, 0x58, 0x54,
+	0x10, 0x80, 0x20, 0x2a, 0x29, 0x0a, 0x0d, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x53, 0x74,
+	0x61, 0x74, 0x75, 0x73, 0x12, 0x0d, 0x0a, 0x09, 0x44, 0x45, 0x4c, 0x49, 0x56, 0x45, 0x52, 0x45,
+	0x44, 0x10, 0x00, 0x12, 0x09, 0x0a, 0x04, 0x53, 0x45, 0x45, 0x4e, 0x10, 0x80, 0x02, 0x2a, 0x6a,
+	0x0a, 0x0c, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x10,
+	0x0a, 0x0c, 0x52, 0x45, 0x43, 0x45, 0x56, 0x5f, 0x55, 0x4e, 0x4b, 0x4f, 0x57, 0x4e, 0x10, 0x00,
+	0x12, 0x0d, 0x0a, 0x09, 0x52, 0x45, 0x43, 0x45, 0x56, 0x5f, 0x50, 0x32, 0x50, 0x10, 0x01, 0x12,
+	0x0f, 0x0a, 0x0b, 0x52, 0x45, 0x43, 0x45, 0x56, 0x5f, 0x47, 0x52, 0x4f, 0x55, 0x50, 0x10, 0x02,
+	0x12, 0x11, 0x0a, 0x0d, 0x52, 0x45, 0x43, 0x45, 0x56, 0x5f, 0x43, 0x48, 0x41, 0x4e, 0x4e, 0x45,
+	0x4c, 0x10, 0x03, 0x12, 0x15, 0x0a, 0x11, 0x52, 0x45, 0x43, 0x45, 0x56, 0x5f, 0x53, 0x4d, 0x41,
+	0x4c, 0x4c, 0x5f, 0x47, 0x52, 0x4f, 0x55, 0x50, 0x10, 0x04, 0x2a, 0x59, 0x0a, 0x0a, 0x4e, 0x6f,
+	0x64, 0x65, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x10, 0x0a, 0x0c, 0x55, 0x4e, 0x4b, 0x4e,
+	0x4f, 0x57, 0x4e, 0x5f, 0x4e, 0x4f, 0x44, 0x45, 0x10, 0x00, 0x12, 0x0f, 0x0a, 0x0a, 0x41, 0x4c,
+	0x49, 0x56, 0x45, 0x5f, 0x4e, 0x4f, 0x44, 0x45, 0x10, 0x80, 0x20, 0x12, 0x13, 0x0a, 0x0e, 0x53,
+	0x55, 0x53, 0x50, 0x45, 0x43, 0x54, 0x45, 0x44, 0x5f, 0x4e, 0x4f, 0x44, 0x45, 0x10, 0x80, 0x40,
+	0x12, 0x13, 0x0a, 0x0e, 0x53, 0x55, 0x53, 0x50, 0x45, 0x43, 0x54, 0x45, 0x44, 0x5f, 0x44, 0x45,
+	0x41, 0x44, 0x10, 0x80, 0x60, 0x32, 0x46, 0x0a, 0x07, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72,
+	0x12, 0x3b, 0x0a, 0x08, 0x53, 0x65, 0x79, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x12, 0x16, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x48,
+	0x65, 0x6c, 0x6c, 0x6f, 0x1a, 0x17, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2e,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x32, 0x10, 0x0a,
+	0x0e, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x32,
+	0x10, 0x0a, 0x0e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x32, 0x0d, 0x0a, 0x0b, 0x55, 0x73, 0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x32, 0x0d, 0x0a, 0x0b, 0x53, 0x79, 0x6e, 0x63, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x42,
+	0x18, 0x5a, 0x16, 0x61, 0x6e, 0x67, 0x6b, 0x6f, 0x72, 0x69, 0x6d, 0x2f, 0x70, 0x6b, 0x67, 0x2f,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -1521,8 +1897,8 @@ func file_angkorim_proto_rawDescGZIP() []byte {
 	return file_angkorim_proto_rawDescData
 }
 
-var file_angkorim_proto_enumTypes = make([]protoimpl.EnumInfo, 6)
-var file_angkorim_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
+var file_angkorim_proto_enumTypes = make([]protoimpl.EnumInfo, 7)
+var file_angkorim_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
 var file_angkorim_proto_goTypes = []interface{}{
 	(ResponseCode)(0),              // 0: protocol.ResponseCode
 	(Command)(0),                   // 1: protocol.Command
@@ -1530,38 +1906,49 @@ var file_angkorim_proto_goTypes = []interface{}{
 	(MessageType)(0),               // 3: protocol.MessageType
 	(MessageStatus)(0),             // 4: protocol.MessageStatus
 	(ReceiverType)(0),              // 5: protocol.ReceiverType
-	(*EmptyMsg)(nil),               // 6: protocol.EmptyMsg
-	(*Request)(nil),                // 7: protocol.Request
-	(*Response)(nil),               // 8: protocol.Response
-	(*SignInRequest)(nil),          // 9: protocol.SignInRequest
-	(*SignInResponse)(nil),         // 10: protocol.SignInResponse
-	(*SubscribeRequest)(nil),       // 11: protocol.SubscribeRequest
-	(*SubscribeResponse)(nil),      // 12: protocol.SubscribeResponse
-	(*RegisterDeviceRequest)(nil),  // 13: protocol.RegisterDeviceRequest
-	(*RegisterDeviceResponse)(nil), // 14: protocol.RegisterDeviceResponse
-	(*User)(nil),                   // 15: protocol.User
-	(*Message)(nil),                // 16: protocol.Message
-	(*MessageRequest)(nil),         // 17: protocol.MessageRequest
-	(*SimpleMessageRequest)(nil),   // 18: protocol.SimpleMessageRequest
-	(*SimpleMessageResponse)(nil),  // 19: protocol.SimpleMessageResponse
-	(*NodeInfo)(nil),               // 20: protocol.NodeInfo
-	(*MembersUpdate)(nil),          // 21: protocol.MembersUpdate
-	(*RequestJoinNode)(nil),        // 22: protocol.RequestJoinNode
+	(NodeStatus)(0),                // 6: protocol.NodeStatus
+	(*EmptyMsg)(nil),               // 7: protocol.EmptyMsg
+	(*Request)(nil),                // 8: protocol.Request
+	(*Response)(nil),               // 9: protocol.Response
+	(*SignInRequest)(nil),          // 10: protocol.SignInRequest
+	(*SignInResponse)(nil),         // 11: protocol.SignInResponse
+	(*SubscribeRequest)(nil),       // 12: protocol.SubscribeRequest
+	(*SubscribeResponse)(nil),      // 13: protocol.SubscribeResponse
+	(*RegisterDeviceRequest)(nil),  // 14: protocol.RegisterDeviceRequest
+	(*RegisterDeviceResponse)(nil), // 15: protocol.RegisterDeviceResponse
+	(*User)(nil),                   // 16: protocol.User
+	(*Message)(nil),                // 17: protocol.Message
+	(*MessageRequest)(nil),         // 18: protocol.MessageRequest
+	(*SimpleMessageRequest)(nil),   // 19: protocol.SimpleMessageRequest
+	(*SimpleMessageResponse)(nil),  // 20: protocol.SimpleMessageResponse
+	(*NodeInfo)(nil),               // 21: protocol.NodeInfo
+	(*MembersUpdate)(nil),          // 22: protocol.MembersUpdate
+	(*RequestJoinNode)(nil),        // 23: protocol.RequestJoinNode
+	(*RequestPush)(nil),            // 24: protocol.RequestPush
+	(*ResponsePush)(nil),           // 25: protocol.ResponsePush
+	(*RequestPull)(nil),            // 26: protocol.RequestPull
+	(*ResponsePull)(nil),           // 27: protocol.ResponsePull
+	(*RequestPushPull)(nil),        // 28: protocol.RequestPushPull
+	(*ResponsePushPull)(nil),       // 29: protocol.ResponsePushPull
+	(*RequestHello)(nil),           // 30: protocol.RequestHello
+	(*ResponseHello)(nil),          // 31: protocol.ResponseHello
 }
 var file_angkorim_proto_depIdxs = []int32{
 	1,  // 0: protocol.Request.cmd:type_name -> protocol.Command
 	1,  // 1: protocol.Response.cmd:type_name -> protocol.Command
 	0,  // 2: protocol.Response.code:type_name -> protocol.ResponseCode
 	2,  // 3: protocol.RegisterDeviceRequest.device_type:type_name -> protocol.DeviceType
-	15, // 4: protocol.Message.sender:type_name -> protocol.User
+	16, // 4: protocol.Message.sender:type_name -> protocol.User
 	5,  // 5: protocol.Message.receiver_type:type_name -> protocol.ReceiverType
 	3,  // 6: protocol.Message.message_type:type_name -> protocol.MessageType
 	4,  // 7: protocol.Message.status:type_name -> protocol.MessageStatus
-	16, // 8: protocol.MessageRequest.message:type_name -> protocol.Message
-	20, // 9: protocol.MembersUpdate.NodeMembers:type_name -> protocol.NodeInfo
-	20, // 10: protocol.RequestJoinNode.From:type_name -> protocol.NodeInfo
-	11, // [11:11] is the sub-list for method output_type
-	11, // [11:11] is the sub-list for method input_type
+	17, // 8: protocol.MessageRequest.message:type_name -> protocol.Message
+	21, // 9: protocol.MembersUpdate.NodeMembers:type_name -> protocol.NodeInfo
+	21, // 10: protocol.RequestJoinNode.From:type_name -> protocol.NodeInfo
+	30, // 11: protocol.Cluster.SeyHello:input_type -> protocol.RequestHello
+	31, // 12: protocol.Cluster.SeyHello:output_type -> protocol.ResponseHello
+	12, // [12:13] is the sub-list for method output_type
+	11, // [11:12] is the sub-list for method input_type
 	11, // [11:11] is the sub-list for extension type_name
 	11, // [11:11] is the sub-list for extension extendee
 	0,  // [0:11] is the sub-list for field type_name
@@ -1777,16 +2164,112 @@ func file_angkorim_proto_init() {
 				return nil
 			}
 		}
+		file_angkorim_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RequestPush); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_angkorim_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ResponsePush); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_angkorim_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RequestPull); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_angkorim_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ResponsePull); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_angkorim_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RequestPushPull); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_angkorim_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ResponsePushPull); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_angkorim_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RequestHello); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_angkorim_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ResponseHello); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_angkorim_proto_rawDesc,
-			NumEnums:      6,
-			NumMessages:   17,
+			NumEnums:      7,
+			NumMessages:   25,
 			NumExtensions: 0,
-			NumServices:   4,
+			NumServices:   5,
 		},
 		GoTypes:           file_angkorim_proto_goTypes,
 		DependencyIndexes: file_angkorim_proto_depIdxs,
@@ -1806,6 +2289,78 @@ var _ grpc.ClientConnInterface
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion6
+
+// ClusterClient is the client API for Cluster service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type ClusterClient interface {
+	SeyHello(ctx context.Context, in *RequestHello, opts ...grpc.CallOption) (*ResponseHello, error)
+}
+
+type clusterClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewClusterClient(cc grpc.ClientConnInterface) ClusterClient {
+	return &clusterClient{cc}
+}
+
+func (c *clusterClient) SeyHello(ctx context.Context, in *RequestHello, opts ...grpc.CallOption) (*ResponseHello, error) {
+	out := new(ResponseHello)
+	err := c.cc.Invoke(ctx, "/protocol.Cluster/SeyHello", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ClusterServer is the server API for Cluster service.
+type ClusterServer interface {
+	SeyHello(context.Context, *RequestHello) (*ResponseHello, error)
+}
+
+// UnimplementedClusterServer can be embedded to have forward compatible implementations.
+type UnimplementedClusterServer struct {
+}
+
+func (*UnimplementedClusterServer) SeyHello(context.Context, *RequestHello) (*ResponseHello, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SeyHello not implemented")
+}
+
+func RegisterClusterServer(s *grpc.Server, srv ClusterServer) {
+	s.RegisterService(&_Cluster_serviceDesc, srv)
+}
+
+func _Cluster_SeyHello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestHello)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClusterServer).SeyHello(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protocol.Cluster/SeyHello",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClusterServer).SeyHello(ctx, req.(*RequestHello))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Cluster_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "protocol.Cluster",
+	HandlerType: (*ClusterServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "SeyHello",
+			Handler:    _Cluster_SeyHello_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "angkorim.proto",
+}
 
 // SessionServiceClient is the client API for SessionService service.
 //

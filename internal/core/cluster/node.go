@@ -1,15 +1,23 @@
 package cluster
 
 import (
+	"angkorim/pkg/protocol"
 	"fmt"
+	"log"
+	"math/rand"
+	"net"
+	"os"
 	"sync"
 	"time"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 type NodeInfo struct {
-	Name      string
-	Ip        string
-	Port      int
+	Name      string `json:"name"`
+	Ip        string `json:"ip"`
+	Port      int    `json:"port"`
 	CreatedAt int64
 	Active    bool
 }
@@ -19,18 +27,14 @@ func (m *NodeInfo) Address() string {
 }
 
 type Node struct {
-	nodeMembers         []*NodeInfo
 	NMMutex             sync.RWMutex
 	currentNode         *NodeInfo
 	heartbeatTime       time.Duration
 	connectTimeout      time.Duration
 	memberFailTimeout   time.Duration
 	memberRemoveTimeout time.Duration
-}
-
-type MembersUpdate struct {
-	Name        string
-	NodeMembers []*NodeInfo
+	status              protocol.NodeStatus
+	updatedAt           int64
 }
 
 func NewNode(name string, host string, port int) *Node {
@@ -43,13 +47,39 @@ func NewNode(name string, host string, port int) *Node {
 	}
 
 	node := &Node{
-		nodeMembers:         []*NodeInfo{},
 		currentNode:         currentNode,
 		heartbeatTime:       2 * time.Second,
 		connectTimeout:      3 * time.Second,
 		memberFailTimeout:   8 * time.Second,
 		memberRemoveTimeout: 24 * time.Second,
+		status:              protocol.NodeStatus_ALIVE_NODE,
+		updatedAt:           time.Now().UnixNano(),
 	}
 
 	return node
+}
+
+func (n *Node) ListenTCP() {
+	rand.Seed(time.Now().UTC().UnixNano())
+	listener, err := net.Listen("tcp", n.currentNode.Address())
+
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+		os.Exit(1)
+	} else {
+		log.Println("Listening and serving Node TCP on", listener.Addr().String())
+	}
+	grpcServer := grpc.NewServer()
+	reflection.Register(grpcServer)
+	protocol.RegisterClusterServer(grpcServer, NodeRPCSever{})
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		if err := grpcServer.Serve(listener); err != nil {
+			log.Fatalf("failed to serve: %v", err)
+		}
+		wg.Done()
+	}()
+	//TODO Join Node
+	wg.Wait()
 }

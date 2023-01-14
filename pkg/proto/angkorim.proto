@@ -122,6 +122,14 @@ message SimpleMessageResponse {
 }
 
 // Cluster 
+
+enum NodeStatus {
+  UNKNOWN_NODE = 0x0000;
+  ALIVE_NODE = 0x1000;
+  SUSPECTED_NODE = 0x2000;
+  SUSPECTED_DEAD = 0x3000;
+}
+
 message NodeInfo {
   string Name = 1;
 	string Ip = 2;
@@ -140,6 +148,42 @@ message RequestJoinNode {
   string ToAddr = 2;
 }
 
+message RequestPush {
+
+}
+message ResponsePush {
+
+}
+
+message RequestPull {
+
+}
+message ResponsePull {
+
+}
+
+message RequestPushPull {
+
+}
+
+message ResponsePushPull {
+
+}
+
+message RequestHello {
+
+}
+
+message ResponseHello {
+
+}
+
+service Cluster {
+  rpc SeyHello(RequestHello) returns (ResponseHello);
+  // rpc Push(RequestPush) returns (ResponsePush);
+  // rpc Pull(ResponsePull) returns (ResponsePull);
+  // rpc PushPull(RequestPushPull) returns (ResponsePushPull);
+}
 
 service SessionService {
   //rpc RegisterDevice(RegisterDeviceRequest) returns (RegisterDeviceResponse);
