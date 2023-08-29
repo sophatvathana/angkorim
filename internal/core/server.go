@@ -31,6 +31,7 @@ var upgrader = websocket.Upgrader{
 var HubManager = NewHub()
 
 type Server struct {
+	ClusterServer *cluster.ClusterServer
 	gnet.BuiltinEventEngine
 	connected int64
 	eng       gnet.Engine
@@ -51,8 +52,9 @@ func (s *Server) RunCluster() {
 	if err != nil {
 		panic("Unable to unmarshal config")
 	}
-	node := cluster.NewNode(serverName, selfIp, selfPort)
-	node.ListenTCP()
+	node := cluster.NewNode(serverName, selfIp, selfPort, nodes)
+	node.ListenTCP(node)
+	s.ClusterServer = node
 }
 
 // @TODO REMOVE replace gin with gnet
@@ -153,7 +155,6 @@ func (wss *Server) OnTick() (delay time.Duration, action gnet.Action) {
 func (s *Server) RunWS(enableCore bool) error {
 	echo := &Server{addr: fmt.Sprintf("tcp://0.0.0.0:%s", viper.GetString("base.port")), multicore: true}
 	return gnet.Run(echo, echo.addr, gnet.WithMulticore(echo.multicore))
-
 }
 
 func (s *Server) RunHttp() error {
@@ -168,7 +169,7 @@ func (s *Server) RunHttp() error {
 	engine.ForwardedByClientIP = true
 	engine.Use(middleware)
 	SetupRoute(engine, true, s)
-	return engine.Run("0.0.0.0:" + viper.GetString("base.port"))
+	return engine.Run("0.0.0.0:" + viper.GetString("base.http_port"))
 }
 
 func RecoverPanic() {

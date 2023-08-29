@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"angkorim/internal/core"
+	"angkorim/internal/core/cluster"
 	"angkorim/internal/store"
 	"angkorim/pkg/log"
 	"fmt"
@@ -20,7 +21,7 @@ var (
 	port        string
 	loglevel    uint8
 	cors        bool
-	cluster     bool
+	isCluster   bool
 	StartServer = &cobra.Command{
 		Use:     "chat",
 		Short:   "Start angkorim API server",
@@ -31,12 +32,16 @@ var (
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return func() error {
+				ks := &cluster.ClusterServer{}
+				server := &core.Server{
+					ClusterServer: ks,
+				}
 				go server.RunCluster()
+				go server.RunHttp()
 				return server.RunWS(cors)
 			}()
 		},
 	}
-	server = &core.Server{}
 )
 
 func init() {
@@ -45,7 +50,7 @@ func init() {
 	StartServer.PersistentFlags().StringVarP(&port, "port", "p", "9527", "Tcp port server listening on")
 	StartServer.PersistentFlags().Uint8VarP(&loglevel, "loglevel", "l", 0, "Log level")
 	StartServer.PersistentFlags().BoolVarP(&cors, "cors", "x", false, "Enable cors headers")
-	StartServer.PersistentFlags().BoolVarP(&cluster, "cluster", "s", false, "cluster-alone mode or distributed mod")
+	StartServer.PersistentFlags().BoolVarP(&isCluster, "cluster", "s", false, "cluster-alone mode or distributed mod")
 }
 
 func usage() {

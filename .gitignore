@@ -6,3 +6,7 @@ data/
 var/logs/*
 backend/__debug_bin
 __debug_bin
+config*.yaml
+config.yaml
+!config.yaml.example
+.DS_Store

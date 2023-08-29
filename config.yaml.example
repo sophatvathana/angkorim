@@ -2,6 +2,7 @@ appName: AngkorIm
 mode: debug
 base:
   port: 9523
+  http_port: 9522
   url: http://localhost:4000
   static_path: data/www
   locales_path: locales
@@ -10,10 +11,10 @@ database:
   driver: sqlite
   postgres:
     charset: utf8
-    host: db-joorum-do-user-8740638-0.b.db.ondigitalocean.com
+    host:  
     port: 25060
-    name: db_chat
-    user: joorum
+    name:  
+    user:  
     password: ukx6q4sq0d75igzb
     pool:
       max: 20
@@ -25,14 +26,13 @@ database:
 
 clusters:
   name: node1
-  isMaster: false #false if you are node
+  isMaster: true #false if you are node
   ip: 127.0.0.1
-  port: 9001
+  port: 9000
   nodes:
-  nodes:
-    - name: master
-      ip: localhost
-      port: 9000
-  
-  
-
+    # - name: node1
+    #   ip: localhost
+    #   port: 9001
+    # - name: node2
+    #   ip: localhost
+    #   port: 9002

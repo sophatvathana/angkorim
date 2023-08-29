@@ -148,28 +148,7 @@ message RequestJoinNode {
   string ToAddr = 2;
 }
 
-message RequestPush {
-
-}
-message ResponsePush {
-
-}
-
-message RequestPull {
-
-}
-message ResponsePull {
-
-}
-
-message RequestPushPull {
-
-}
-
-message ResponsePushPull {
-
-}
-
+ 
 message RequestHello {
 
 }
@@ -178,11 +157,21 @@ message ResponseHello {
 
 }
 
-service Cluster {
-  rpc SeyHello(RequestHello) returns (ResponseHello);
-  // rpc Push(RequestPush) returns (ResponsePush);
-  // rpc Pull(ResponsePull) returns (ResponsePull);
-  // rpc PushPull(RequestPushPull) returns (ResponsePushPull);
+message StoreRequest {
+  string key = 1;
+  string value = 2;
+}
+
+message StoreResponse {
+  string response = 1;
+}
+
+message RetrieveRequest {
+  string key = 1;
+}
+
+message RetrieveResponse {
+  string value = 1;
 }
 
 service SessionService {
@@ -200,3 +189,61 @@ service UserService {
 service SyncService {
 
 }
+
+
+message Member {
+  string id = 1;
+  string address = 2;
+}
+
+message PingRequest {
+  Member sender = 1;
+}
+
+message PingResponse {
+  bool ack = 1;
+  repeated Member members = 2;
+  Member pongFrom = 3;
+}
+
+message JoinRequest {
+  Member newMember = 1;
+}
+
+message JoinResponse {
+  bool ack = 1;
+  repeated Member members = 2;
+  Member nodeToJoin = 3;
+}
+
+message KeyValue {
+  string key = 1;
+  string value = 2;
+}
+message Element  {
+	string value  = 1;
+	int64 timestamp = 2;
+}
+
+message CRDTKeyValueStore {
+  map<string, Element> Elements = 1;
+}
+
+
+message PushCRDTRequest {
+  Member sender = 1;
+  CRDTKeyValueStore kv_store = 2;
+}
+ 
+message PushCRDTResponse {
+  bool ack = 1;
+}
+
+
+service Membership {
+  rpc Ping(PingRequest) returns (PingResponse);
+  rpc Join(JoinRequest) returns (JoinResponse);
+  rpc PushCRDT(stream PushCRDTRequest) returns (stream PushCRDTResponse) {}
+}
+
+ 
