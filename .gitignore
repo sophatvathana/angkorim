@@ -1,0 +1,56 @@
+# Compiled binary and artifacts
+target/
+debug/
+release/
+
+# Rust package manager lockfile (for libraries, not binaries)
+Cargo.lock
+
+# Build artifacts
+*.rmeta
+*.rlib
+*.rmeta
+*.d
+*.dylib
+# Dependencies
+Cargo.lock
+/.cargo/
+
+# Rust logs
+*.log
+
+# Test output
+test-output/
+*.profdata
+
+# IDE/editor files
+.idea/
+.vscode/
+.qodo/
+*.iml
+*.ipr
+*.iws
+.sqlx/
+
+# Backup and temporary files
+*.rs.bk
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+
+# MacOS files
+.DS_Store
+
+# Windows files
+Thumbs.db
+desktop.ini
+chat.db
+
+# Linux files
+*.~
+.env
+
+# Config files
+config/node*.yml

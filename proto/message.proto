@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package chat;
+
+enum MessageType {
+  DIRECT = 0;
+  GROUP = 1;
+  CHANNEL = 2;
+}
+
+enum EncryptionType {
+  NONE = 0;       // No encryption (plaintext)
+  E2E = 1;        // End-to-end encrypted
+}
+
+message ChatMessage {
+  string id = 1;
+  string sender = 2;
+  string receiver = 3;
+  bytes content = 4;
+  uint64 timestamp = 5;
+  MessageType message_type = 6;
+  string version_vector = 7;
+  bytes signature = 8;
+  EncryptionType encryption_type = 9;
+}
+
+message SyncRequest {
+  string node_id = 1;
+  string version_vector = 2;
+}
+
+message SyncResponse {
+  repeated ChatMessage messages = 1;
+  string version_vector = 2;
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+  string avatar = 3;
+}
+
+message AuthRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  string token = 1;
+}
+
+message SubscriptionRequest {
+  string user_id = 1;
+  string group_id = 2;
+}
+
+message SubscriptionResponse {
+  string status = 1;
+  string message = 2;
+}

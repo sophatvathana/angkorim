@@ -1,0 +1,39 @@
+syntax = "proto3";
+package protocol;
+
+message HandshakeMessage {
+  string user_id = 1;
+  bytes public_key = 2;
+  bytes signature = 3;  // Sign(timestamp + user_id)
+  uint64 timestamp = 4;
+}
+
+message Ping {
+  string node_id = 1;
+  uint64 timestamp = 2;
+  uint32 cluster_port_sync = 3;
+  uint32 cluster_port_discovery = 4;
+}
+
+message Pong {
+  string node_id = 1;
+  uint64 timestamp = 2;
+}
+
+message GossipMessage {
+  string node_id = 1;
+  string version_vector = 2;
+  repeated bytes messages = 3;
+}
+
+message SuspicionMessage {
+  string suspect_id = 1;
+  string from_node = 2;
+  uint64 timestamp = 3;
+}
+
+message AliveMessage {
+  string node_id = 1;
+  uint64 incarnation = 2;
+  uint64 timestamp = 3;
+}
