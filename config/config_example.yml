@@ -1,0 +1,32 @@
+server:
+  host: "127.0.0.1"
+  port: 8080
+  node_id: "node1" # Unique identifier for this node
+  cluster_port_sync: 60051
+  cluster_port_discovery: 6051
+
+cluster:
+  peers:
+    - host: "127.0.0.1"
+      sync_port: 60051
+      discovery_port: 6051
+      node_id: "node1"
+  discovery:
+    probe_interval: 1000 # milliseconds
+    probe_timeout: 500 # milliseconds
+    indirect_probes: 2 # number of indirect probes
+    suspicion_timeout: 10000 # milliseconds
+
+storage:
+  type: "sqlite" # sqlite, postgres, or dynamodb
+  sqlite:
+    path: "chat.db"
+  postgres:
+    host: "localhost"
+    port: 5432
+    database: "chat"
+    user: "postgres"
+    password: "password"
+  dynamodb:
+    region: "ap-southeast-1"
+    table: "chat"
