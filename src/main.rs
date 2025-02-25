@@ -12,7 +12,7 @@ pub mod proto {
 mod utils;
 
 use axum::{ routing::get, Router };
-use storage::Storage;
+use storage::{memory::MemoryStorage, Storage};
 use websocket::ChatState;
 use std::sync::Arc;
 use tokio::{ net::TcpListener, sync::broadcast };
@@ -37,8 +37,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
   let config_clone = config.clone();
 
   // Initialize storage
-  let storage = Arc::new(SqliteStorage::new(&config.storage.sqlite.path).await.unwrap());
-
+  let mut storage: Arc<dyn Storage> = Arc::new(MemoryStorage::new());
+  if config.storage.r#type == "sqlite" {
+    storage = Arc::new(SqliteStorage::new(&config.storage.sqlite.path).await.unwrap());
+  }
   let discovery: Arc<Discovery> = Arc::new(Discovery::new(Arc::new(config_clone.clone())));
 
   let discovery_server = DiscoveryServer::new(

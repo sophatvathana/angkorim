@@ -83,3 +83,4 @@ pub trait Storage: Send + Sync {
 }
 
 pub mod sqlite;
+pub mod memory;
