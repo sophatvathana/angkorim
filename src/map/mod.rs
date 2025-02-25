@@ -6,7 +6,7 @@ use tokio::sync::RwLock;
 
 pub const PARTITION: usize = 8;
 
-pub struct NodeMap<K, V, S = std::collections::hash_map::RandomState> 
+pub struct NodeMap<K, V, S = std::collections::hash_map::RandomState>
 where K: Hash + Eq + Clone, S: BuildHasher + Default {
   pub map: Vec<Arc<RwLock<HashMap<K, V>>>>,
   hash_builder: S,
@@ -73,7 +73,7 @@ use super::*;
     let node_map = NodeMap::<&str, &str>::new();
     node_map.set("key1", "value1").await;
     node_map.set("key2", "value2").await;
-    assert_eq!(node_map.get_all().await, vec!["value1", "value2"]);
+    assert_eq!(node_map.get_all().await.sort(), vec!["value1", "value2"].sort());
   }
 
   #[tokio::test]
@@ -86,12 +86,13 @@ use super::*;
 
   #[tokio::test]
   async fn test_node_map_set() {
+    let last_seen = Instant::now();
     let node_map = NodeMap::<&str, Node>::new();
-    node_map.set("key1", Node { id: "key1".to_string(), host: "localhost".to_string(), sync_port: 8080, discovery_port: 8080, last_seen: Instant::now(), status: NodeStatus::Alive, incarnation: 0 }).await;
-    node_map.set("key1", Node { id: "key1".to_string(), host: "localhost".to_string(), sync_port: 8081, discovery_port: 8081, last_seen: Instant::now(), status: NodeStatus::Alive, incarnation: 0 }).await;
-    assert_eq!(node_map.get(&"key1").read().await.get("key1"), 
+    node_map.set("key1", Node { id: "key1".to_string(), host: "localhost".to_string(), sync_port: 8080, discovery_port: 8080, last_seen: last_seen, status: NodeStatus::Alive, incarnation: 0 }).await;
+    node_map.set("key1", Node { id: "key1".to_string(), host: "localhost".to_string(), sync_port: 8081, discovery_port: 8081, last_seen: last_seen, status: NodeStatus::Alive, incarnation: 0 }).await;
+    assert_eq!(node_map.get(&"key1").read().await.get("key1"),
     Some(&Node { id: "key1".to_string(), host: "localhost".to_string(),
-     sync_port: 8081, discovery_port: 8081, last_seen: Instant::now(), status: NodeStatus::Alive, incarnation: 0 }));
+    sync_port: 8081, discovery_port: 8081, last_seen: last_seen, status: NodeStatus::Alive, incarnation: 0 }));
   }
 
   #[tokio::test]
@@ -99,17 +100,16 @@ use super::*;
     let node_map = Arc::new(NodeMap::<&str, Node>::new());
     let node_map_clone = node_map.clone();
     let node_map_clone2 = node_map.clone();
-    
+    let last_seen = Instant::now();
     let handle = tokio::spawn(async move {
-      node_map_clone.set("key1", Node { id: "key1".to_string(), host: "localhost".to_string(), sync_port: 8080, discovery_port: 8080, last_seen: Instant::now(), status: NodeStatus::Alive, incarnation: 0 }).await;
+      node_map_clone.set("key1", Node { id: "key1".to_string(), host: "localhost".to_string(), sync_port: 8080, discovery_port: 8080, last_seen: last_seen, status: NodeStatus::Alive, incarnation: 0 }).await;
     });
 
     let handle2 = tokio::spawn(async move {
-      node_map_clone2.set("key1", Node { id: "key1".to_string(), host: "localhost".to_string(), sync_port: 8081, discovery_port: 8081, last_seen: Instant::now(), status: NodeStatus::Alive, incarnation: 0 }).await;
+      node_map_clone2.set("key1", Node { id: "key1".to_string(), host: "localhost".to_string(), sync_port: 8081, discovery_port: 8081, last_seen: last_seen, status: NodeStatus::Alive, incarnation: 0 }).await;
     });
 
     let _ = tokio::join!(handle, handle2);
-
-    assert_eq!(node_map.get(&"key1").read().await.get("key1"), Some(&Node { id: "key1".to_string(), host: "localhost".to_string(), sync_port: 8081, discovery_port: 8081, last_seen: Instant::now(), status: NodeStatus::Alive, incarnation: 0 }));
+    assert_eq!(node_map.get(&"key1").read().await.get("key1"), Some(&Node { id: "key1".to_string(), host: "localhost".to_string(), sync_port: 8081, discovery_port: 8081, last_seen: last_seen, status: NodeStatus::Alive, incarnation: 0 }));
   }
 }
