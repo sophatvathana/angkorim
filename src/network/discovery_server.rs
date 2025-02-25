@@ -1,8 +1,7 @@
 use tokio::{ io::{ AsyncReadExt, AsyncWriteExt }, net::TcpListener };
-use crate::network::{
-  protocol::{ AliveMessage, Ping, Pong, SuspicionMessage },
-  discovery::NodeStatus,
-};
+use crate::{map::NodeMap, network::{
+  discovery::NodeStatus, protocol::{ AliveMessage, Ping, Pong, SuspicionMessage }
+}};
 use prost::Message;
 use std::sync::Arc;
 use tokio::sync::RwLock;
@@ -12,7 +11,7 @@ use std::time::{ Instant };
 use crate::config::Config;
 
 pub struct DiscoveryServer {
-  nodes: Arc<RwLock<HashMap<String, Node>>>,
+  nodes: Arc<NodeMap<String, Node>>,
   discovery: Arc<Discovery>,
   port: u16,
   config: Arc<Config>,
@@ -55,7 +54,7 @@ impl DiscoveryServer {
             let _ = socket.write_all(&pong.encode_to_vec()).await;
 
             {
-              let mut nodes_write = nodes.write().await;
+              let mut nodes_write = nodes.get_all().await;
               if !nodes_write.contains_key(&ping.node_id) {
                 let node = Node {
                   id: ping.node_id.clone(),
@@ -74,10 +73,11 @@ impl DiscoveryServer {
             discovery.suspect_node(&suspicion.suspect_id, &suspicion.from_node).await;
           } else if let Ok(alive) = AliveMessage::decode(buf.as_slice()) {
             // Handle alive message
-            if let Some(node) = nodes.write().await.get_mut(&alive.node_id) {
+            if let Some(mut node) = nodes.get_item(&alive.node_id).await {
               if alive.incarnation > node.incarnation {
                 node.update_status();
                 node.incarnation = alive.incarnation;
+                nodes.update(alive.node_id.clone(), node.clone()).await;
               }
             }
           }

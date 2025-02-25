@@ -79,51 +79,41 @@ impl SyncManager {
     count: usize
   ) -> Result<(), Box<dyn std::error::Error>> {
     println!("Syncing with random peers - attempting to acquire discovery nodes lock...");
-    match tokio::time::timeout(Duration::from_secs(5), self.discovery.nodes.read()).await {
-      Ok(nodes) => {
-        println!("Successfully acquired discovery nodes lock");
-        let node_keys = nodes.keys().collect::<Vec<_>>();
-        println!("Known nodes for sync: {:?}", node_keys);
+    let nodes = self.discovery.nodes.get_all().await;
+    println!("Successfully acquired discovery nodes lock");
+    let node_keys = nodes.keys().collect::<Vec<_>>();
+    println!("Known nodes for sync: {:?}", node_keys);
 
-        let alive_nodes: Vec<_> = nodes
-          .values()
-          .filter(|n| matches!(n.status, NodeStatus::Alive))
-          .collect();
+    let alive_nodes: Vec<_> = nodes
+      .values()
+      .filter(|n| matches!(n.status, NodeStatus::Alive))
+      .collect();
 
-        println!("Found {} alive nodes for sync", alive_nodes.len());
+    println!("Found {} alive nodes for sync", alive_nodes.len());
 
-        if alive_nodes.is_empty() {
-          println!("No alive nodes found for sync");
-          return Ok(());
-        }
+    if alive_nodes.is_empty() {
+      println!("No alive nodes found for sync");
+      return Ok(());
+    }
 
-        let mut rng = StdRng::from_rng(&mut rand::thread_rng()).unwrap();
-        let selected = alive_nodes.choose_multiple(
-          &mut rng,
-          std::cmp::min(count, alive_nodes.len())
-        );
+    let mut rng = StdRng::from_rng(&mut rand::thread_rng()).unwrap();
+    let selected = alive_nodes.choose_multiple(
+      &mut rng,
+      std::cmp::min(count, alive_nodes.len())
+    );
 
-        let sync_targets: Vec<(String, String, u16)> = selected
-          .map(|node| (node.id.clone(), node.host.clone(), node.sync_port))
-          .collect();
-
-        drop(nodes);
-
-        // Now perform the sync with the cloned data
-        for (id, host, port) in sync_targets {
-          let addr = format!("{}:{}", host, port);
-          println!("Attempting to sync with node at {} (id: {})", addr, id);
-          if let Err(e) = self.sync_with_peer(addr).await {
-            eprintln!("Error syncing with {}: {}", id, e);
-          }
-        }
-        Ok(())
-      }
-      Err(_) => {
-        println!("Timeout waiting for sync nodes lock - possible deadlock detected");
-        Ok(())
+    let sync_targets: Vec<(String, String, u16)> = selected
+      .map(|node| (node.id.clone(), node.host.clone(), node.sync_port))
+      .collect();
+    // Now perform the sync with the cloned data
+    for (id, host, port) in sync_targets {
+      let addr = format!("{}:{}", host, port);
+      println!("Attempting to sync with node at {} (id: {})", addr, id);
+      if let Err(e) = self.sync_with_peer(addr).await {
+        eprintln!("Error syncing with {}: {}", id, e);
       }
     }
+    Ok(())
   }
 
   pub async fn sync_with_peer(&self, peer_addr: String) -> Result<(), Box<dyn std::error::Error>> {
@@ -254,13 +244,12 @@ impl SyncManager {
         self.clean_message_cache().await;
         let sync_targets = match
           tokio::time::timeout(Duration::from_secs(1), async {
-            let nodes = self.discovery.nodes.read().await;
+            let nodes = self.discovery.nodes.get_all().await;
             let targets: Vec<(String, String, u16)> = nodes
               .values()
               .filter(|n| matches!(n.status, NodeStatus::Alive))
               .map(|n| (n.id.clone(), n.host.clone(), n.sync_port))
               .collect();
-            drop(nodes);
             targets
           }).await
         {

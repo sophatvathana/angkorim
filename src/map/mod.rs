@@ -2,7 +2,7 @@ use std::hash::{BuildHasher, Hash, Hasher};
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use tokio::sync::RwLock;
+use tokio::sync::{RwLock, RwLockWriteGuard};
 
 pub const PARTITION: usize = 8;
 
@@ -27,6 +27,27 @@ impl<K, V, S> NodeMap<K, V, S> where K: Hash + Eq + Clone, V: Clone, S: BuildHas
     &self.map[index as usize]
   }
 
+  pub async fn get_item(&self, key: &K) -> Option<V> {
+    let mut hasher: <S as BuildHasher>::Hasher = self.hash_builder.build_hasher();
+    key.hash(&mut hasher);
+    let index = hasher.finish() % PARTITION as u64;
+    let map = self.map[index as usize].read().await;
+    map.get(key).map(|v| v.clone())
+  }
+
+  pub async fn update(&self, key: K, value: V) {
+    let mut hasher = self.hash_builder.build_hasher();
+    key.hash(&mut hasher);
+    let index = hasher.finish() as usize % PARTITION;
+    let mut map = self.map[index].write().await;
+
+    if let Some(existing) = map.get_mut(&key) {
+      *existing = value;
+    } else {
+      map.insert(key, value);
+    }
+  }
+
   pub async fn set(&self, key: K, value: V) {
     let mut hasher = self.hash_builder.build_hasher();
     key.hash(&mut hasher);
@@ -43,11 +64,11 @@ impl<K, V, S> NodeMap<K, V, S> where K: Hash + Eq + Clone, V: Clone, S: BuildHas
     map.remove(key);
   }
 
-  pub async fn get_all(&self) -> Vec<V> {
-    let mut result = Vec::new();
+  pub async fn get_all(&self) -> HashMap<K, V> {
+    let mut result = HashMap::new();
     for map in self.map.iter() {
       let map = map.read().await;
-      result.extend(map.values().cloned());
+      result.extend(map.iter().map(|(k, v)| (k.clone(), v.clone())));
     }
     result
   }
@@ -73,7 +94,10 @@ use super::*;
     let node_map = NodeMap::<&str, &str>::new();
     node_map.set("key1", "value1").await;
     node_map.set("key2", "value2").await;
-    assert_eq!(node_map.get_all().await.sort(), vec!["value1", "value2"].sort());
+    let mut expected = HashMap::new();
+    expected.insert("key1", "value1");
+    expected.insert("key2", "value2");
+    assert_eq!(node_map.get_all().await, expected);
   }
 
   #[tokio::test]

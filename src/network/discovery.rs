@@ -3,6 +3,7 @@ use std::sync::Arc;
 use tokio::sync::RwLock;
 use tokio::time::{ Duration, Instant };
 use crate::config::{ Config, PeerConfig };
+use crate::map::NodeMap;
 use crate::proto::{ Ping, Pong, SuspicionMessage };
 use tokio::net::TcpStream;
 use tokio::time::timeout;
@@ -36,7 +37,7 @@ pub struct Node {
 #[derive(Clone)]
 pub struct Discovery {
   config: Arc<Config>,
-  pub nodes: Arc<RwLock<HashMap<String, Node>>>,
+  pub nodes: Arc<NodeMap<String, Node>>,
   failed_nodes: Arc<RwLock<HashSet<String>>>,
 }
 
@@ -44,7 +45,7 @@ impl Discovery {
   pub fn new(config: Arc<Config>) -> Self {
     Self {
       config,
-      nodes: Arc::new(RwLock::new(HashMap::new())),
+      nodes: Arc::new(NodeMap::<String, Node>::new()),
       failed_nodes: Arc::new(RwLock::new(HashSet::new())),
     }
   }
@@ -60,15 +61,16 @@ impl Discovery {
       incarnation: 0,
     };
     println!("Adding node: {:?}", node);
-    let mut nodes = self.nodes.write().await;
-    nodes.insert(node.id.clone(), node);
+    // let mut nodes = self.nodes.write().await;
+    // nodes.insert(node.id.clone(), node);
+    self.nodes.set(node.id.clone(), node).await;
   }
 
   pub async fn start(&self) {
     let discovery_config = self.config.cluster.discovery.clone();
     // Initial peer discovery
-    if let Some(nodes) = self.nodes.read().await.values().next() {
-      println!("Starting discovery with initial nodes: {:?}", nodes);
+    if let Some(node) = self.nodes.get_all().await.values().next() {
+      println!("Starting discovery with initial nodes: {:?}", node);
     }
 
     let probe_interval = Duration::from_millis(discovery_config.probe_interval);
@@ -99,7 +101,7 @@ impl Discovery {
 
         // Get a snapshot of nodes to check
         let nodes_to_check = {
-          let nodes_read = nodes.read().await;
+          let nodes_read = nodes.get_all().await;
           nodes_read
             .iter()
             .filter(|(id, node)| {
@@ -117,13 +119,13 @@ impl Discovery {
         for (node_id, node) in nodes_to_check {
           println!("Probing node: {} at {}:{}", node_id, node.host, node.discovery_port);
           let probe_result = Self::probe_node(&node).await;
-          let mut nodes_write = nodes.write().await;
-          if let Some(node) = nodes_write.get_mut(&node_id) {
+          if let Some(mut node) = nodes.get_item(&node_id).await {
             if probe_result.is_err() {
               node.status = NodeStatus::Suspect {
                 suspicion_start: Instant::now(),
                 suspicion_timeout: Duration::from_millis(discovery_config.suspicion_timeout),
               };
+              nodes.update(node_id.clone(), node.clone()).await;
 
               let mut indirect_success = false;
               for _ in 0..indirect_probes {
@@ -134,9 +136,8 @@ impl Discovery {
               }
 
               // Re-acquire write lock for final status update
-              let mut nodes_write = nodes.write().await;
               let mut dead_node = None;
-              if let Some(node) = nodes_write.get_mut(&node_id) {
+              if let Some(mut node) = nodes.get_item(&node_id).await {
                 if !indirect_success {
                   node.status = NodeStatus::Dead { since: Instant::now() };
                   dead_node = Some(node_id.clone());
@@ -144,8 +145,8 @@ impl Discovery {
                   node.last_seen = Instant::now();
                   node.status = NodeStatus::Alive;
                 }
+                nodes.update(node_id.clone(), node.clone()).await;
               }
-              drop(nodes_write);
 
               if let Some(dead_node_id) = dead_node {
                 failed_nodes.write().await.insert(dead_node_id.clone());
@@ -154,6 +155,7 @@ impl Discovery {
             } else {
               node.last_seen = Instant::now();
               node.status = NodeStatus::Alive;
+              nodes.update(node_id.clone(), node.clone()).await;
             }
           }
         }
@@ -189,7 +191,7 @@ impl Discovery {
   }
 
   pub async fn get_peers(&self) -> Vec<PeerConfig> {
-    let nodes = self.nodes.read().await;
+    let nodes = self.nodes.get_all().await;
     nodes
       .values()
       .map(|node| PeerConfig {
@@ -202,7 +204,7 @@ impl Discovery {
   }
 
   pub async fn suspect_node(&self, node_id: &str, from_node: &str) {
-    let mut nodes = self.nodes.write().await;
+    let mut nodes = self.nodes.get_all().await;
     if let Some(node) = nodes.get_mut(node_id) {
       match node.status {
         NodeStatus::Alive => {
@@ -218,7 +220,7 @@ impl Discovery {
   }
 
   async fn broadcast_suspicion(&self, suspect_id: &str, from_node: &str) {
-    let nodes = self.nodes.read().await;
+    let nodes = self.nodes.get_all().await;
     for node in nodes.values() {
       if node.id != suspect_id && matches!(node.status, NodeStatus::Alive) {
         if let Ok(mut stream) = TcpStream::connect((node.host.as_str(), node.discovery_port)).await {
