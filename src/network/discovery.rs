@@ -22,7 +22,7 @@ pub enum NodeStatus {
   },
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Node {
   pub id: String,
   pub host: String,

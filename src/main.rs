@@ -1,8 +1,10 @@
 mod config;
+mod map;
 mod network;
 mod storage;
 mod websocket;
 mod auth;
+
 pub mod proto {
   include!(concat!(env!("OUT_DIR"), "/chat.rs"));
   include!(concat!(env!("OUT_DIR"), "/protocol.rs"));
