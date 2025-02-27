@@ -25,6 +25,31 @@ message ChatMessage {
   EncryptionType encryption_type = 9;
 }
 
+message Message {
+  oneof message {
+    ChatMessage chat_message = 1;
+    CreateGroupRequest create_group_request = 2;
+    CreateGroupResponse create_group_response = 3;
+    JoinGroupRequest join_group_request = 4;
+    JoinGroupResponse join_group_response = 5;
+    LeaveGroupRequest leave_group_request = 6;
+    LeaveGroupResponse leave_group_response = 7;
+    AddMemberRequest add_member_request = 8;
+    AddMemberResponse add_member_response = 9;
+    RemoveMemberRequest remove_member_request = 10;
+    RemoveMemberResponse remove_member_response = 11;
+    CreateChannelRequest create_channel_request = 12;
+    CreateChannelResponse create_channel_response = 13;
+    SubscribeChannelRequest subscribe_channel_request = 14;
+    SubscribeChannelResponse subscribe_channel_response = 15;
+    AuthInitiate auth_initiate = 16;
+    AuthSendCode auth_send_code = 17;
+    AuthSendCodeResponse auth_send_code_response = 18;
+    AuthVerifyCode auth_verify_code = 19;
+    AuthResponse auth_response = 20;
+  }
+}
+
 message SyncRequest {
   string node_id = 1;
   string version_vector = 2;
@@ -41,21 +66,115 @@ message User {
   string avatar = 3;
 }
 
-message AuthRequest {
-  string username = 1;
-  string password = 2;
+message CreateGroupRequest {
+  string name = 1;
+  string description = 2;
+  string avatar = 3;
+}
+
+message CreateGroupResponse {
+  string group_id = 1;
+}
+
+message JoinGroupRequest {
+  string group_id = 1;
+}
+
+message JoinGroupResponse {
+  string status = 1;
+  string message = 2;
+}
+
+message LeaveGroupRequest {
+  string group_id = 1;
+}
+
+message LeaveGroupResponse {
+  string status = 1;
+  string message = 2;
+}
+
+message AddMemberRequest {
+  string group_id = 1;
+  string user_id = 2;
+}
+
+message AddMemberResponse {
+  string status = 1;
+  string message = 2;
+}
+
+message RemoveMemberRequest {
+  string group_id = 1;
+  string user_id = 2;
+}
+
+message RemoveMemberResponse {
+  string status = 1;
+  string message = 2;
+}
+
+message CreateChannelRequest {
+  string name = 1;
+  string description = 2;
+  string avatar = 3;
+}
+
+message CreateChannelResponse {
+  string channel_id = 1;
+}
+
+message SubscribeChannelRequest {
+  string channel_id = 1;
+}
+
+message SubscribeChannelResponse {
+  string status = 1;
+  string message = 2;
+}
+
+message AuthInitiate {
+  oneof identifier {
+    string username = 1;
+    string phone_number = 2;
+  }
+  string password = 3;
+  string app_hash = 4;
+  AuthMethod auth_method = 5;
+}
+
+message AuthSendCode {
+  string phone_number = 1;
+  string app_hash = 2;
+}
+
+message AuthSendCodeResponse {
+  string verification_id = 1;
+  uint32 timeout = 2;
+  bool is_new_user = 3;
+}
+
+message AuthVerifyCode {
+  string verification_id = 1;
+  string code = 2;
+  // for new user
+  optional string username = 3;
+  optional string full_name = 4;
 }
 
 message AuthResponse {
-  string token = 1;
+  User user = 1;
+  string session_token = 2;
+  string refresh_token = 3;
+  AuthStatus status = 4;
 }
 
-message SubscriptionRequest {
-  string user_id = 1;
-  string group_id = 2;
-}
-
-message SubscriptionResponse {
-  string status = 1;
-  string message = 2;
+enum AuthStatus {
+  SUCCESS = 0;
+  INVALID_CREDENTIALS = 1;
+  CODE_EXPIRED = 2;
+  ACCOUNT_NOT_FOUND = 3;
+  USERNAME_TAKEN = 4;
+  PHONE_ALREADY_USED = 5;
+  REQUIRES_2FA = 6;
 }
