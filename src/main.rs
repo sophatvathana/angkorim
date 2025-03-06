@@ -19,14 +19,19 @@ use tokio::{ net::TcpListener, sync::broadcast };
 use crate::{
   config::Config,
   network::{ sync_manager::SyncManager, discovery::Discovery, tcp::TcpServer },
-  storage::sqlite::SqliteStorage,
-  websocket::ws_handler,
+  storage::{
+    sqlite::SqliteStorage,
+    user::{ SqliteUserStorage, UserStorage },
+  },
+  websocket::{ ws_handler, handle::ConnectionHandler },
   network::discovery_server::DiscoveryServer,
 };
+use sqlx::sqlite::SqlitePool;
 use std::time::Duration;
 use std::collections::HashMap;
 use tokio::sync::RwLock;
 use crate::auth::AuthManager;
+use tokio::sync::mpsc;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -38,9 +43,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
   // Initialize storage
   let mut storage: Arc<dyn Storage> = Arc::new(MemoryStorage::new());
+  let mut user_storage = None;
+
   if config.storage.r#type == "sqlite" {
+    let pool = SqlitePool::connect(&format!("sqlite:{}", config.storage.sqlite.path)).await?;
     storage = Arc::new(SqliteStorage::new(&config.storage.sqlite.path).await.unwrap());
+    user_storage = Some(Arc::new(SqliteUserStorage::new(pool)) as Arc<dyn UserStorage>);
   }
+
+  let user_storage = user_storage.unwrap_or_else(|| {
+    panic!("No user storage configured")
+  });
+
   let discovery: Arc<Discovery> = Arc::new(Discovery::new(Arc::new(config_clone.clone())));
 
   let discovery_server = DiscoveryServer::new(
@@ -80,8 +94,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
   let chat_state = Arc::new(ChatState {
     sync_manager: Arc::clone(&sync_manager),
     tx: tx.clone(),
-    connections,
-    auth,
+    connections: Arc::clone(&connections),
+    auth: Arc::clone(&auth),
+    user_storage: Arc::clone(&user_storage),
   });
 
   let app = Router::new().route("/ws", get(ws_handler)).with_state(chat_state);

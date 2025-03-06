@@ -3,6 +3,11 @@ use serde::{ Deserialize, Serialize };
 
 use crate::proto::ChatMessage;
 use crate::proto::MessageType as ProtoMessageType;
+
+pub mod sqlite;
+pub mod memory;
+pub mod user;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Message {
   pub id: String,
@@ -21,6 +26,10 @@ impl From<MessageType> for ProtoMessageType {
       MessageType::Direct => ProtoMessageType::Direct,
       MessageType::Group => ProtoMessageType::Group,
       MessageType::Channel => ProtoMessageType::Channel,
+      MessageType::System => ProtoMessageType::System,
+      MessageType::Typing => ProtoMessageType::Typing,
+      MessageType::ReadReceipt => ProtoMessageType::ReadReceipt,
+      MessageType::Reaction => ProtoMessageType::Reaction,
     }
   }
 }
@@ -31,6 +40,10 @@ impl From<ProtoMessageType> for MessageType {
       ProtoMessageType::Direct => MessageType::Direct,
       ProtoMessageType::Group => MessageType::Group,
       ProtoMessageType::Channel => MessageType::Channel,
+      ProtoMessageType::System => MessageType::System,
+      ProtoMessageType::Typing => MessageType::Typing,
+      ProtoMessageType::ReadReceipt => MessageType::ReadReceipt,
+      ProtoMessageType::Reaction => MessageType::Reaction,
     }
   }
 }
@@ -41,6 +54,10 @@ impl From<i32> for MessageType {
       0 => MessageType::Direct,
       1 => MessageType::Group,
       2 => MessageType::Channel,
+      3 => MessageType::System,
+      4 => MessageType::Typing,
+      5 => MessageType::ReadReceipt,
+      6 => MessageType::Reaction,
       _ => panic!("Invalid message type"),
     }
   }
@@ -52,7 +69,10 @@ impl From<MessageType> for i32 {
       MessageType::Direct => 0,
       MessageType::Group => 1,
       MessageType::Channel => 2,
-      _ => panic!("Invalid message type"),
+      MessageType::System => 3,
+      MessageType::Typing => 4,
+      MessageType::ReadReceipt => 5,
+      MessageType::Reaction => 6,
     }
   }
 }
@@ -62,6 +82,10 @@ pub enum MessageType {
   Direct,
   Group,
   Channel,
+  System,
+  Typing,
+  ReadReceipt,
+  Reaction,
 }
 
 impl PartialEq for MessageType {
@@ -81,6 +105,3 @@ pub trait Storage: Send + Sync {
     user: &str
   ) -> Result<Vec<Message>, Box<dyn std::error::Error + Send + Sync>>;
 }
-
-pub mod sqlite;
-pub mod memory;

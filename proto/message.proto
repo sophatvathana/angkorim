@@ -6,6 +6,10 @@ enum MessageType {
   DIRECT = 0;
   GROUP = 1;
   CHANNEL = 2;
+  SYSTEM = 3;
+  TYPING = 4;
+  READ_RECEIPT = 5;
+  REACTION = 6;
 }
 
 enum EncryptionType {
@@ -23,9 +27,36 @@ message ChatMessage {
   string version_vector = 7;
   bytes signature = 8;
   EncryptionType encryption_type = 9;
+  optional MessageMetadata metadata = 10;
 }
 
-message Message {
+message MessageMetadata {
+  oneof data {
+    TypingIndicator typing = 1;
+    ReadReceipt read_receipt = 2;
+    MessageReaction reaction = 3;
+    AuthData auth = 4;
+    DeliveryStatus delivery_status = 5;
+  }
+}
+
+message TypingIndicator {
+  string chat_id = 1;  // Group ID or user ID
+  bool is_typing = 2;
+}
+
+message ReadReceipt {
+  string message_id = 1;
+  uint64 read_at = 2;
+}
+
+message MessageReaction {
+  string message_id = 1;
+  string reaction = 2;  // Emoji or reaction code
+  bool is_removed = 3;
+}
+
+message WSMessage {
   oneof message {
     ChatMessage chat_message = 1;
     CreateGroupRequest create_group_request = 2;
@@ -133,6 +164,11 @@ message SubscribeChannelResponse {
   string message = 2;
 }
 
+enum AuthMethod {
+  USERNAME = 0;
+  PHONE = 1;
+}
+
 message AuthInitiate {
   oneof identifier {
     string username = 1;
@@ -177,4 +213,26 @@ enum AuthStatus {
   USERNAME_TAKEN = 4;
   PHONE_ALREADY_USED = 5;
   REQUIRES_2FA = 6;
+}
+
+message MessageError {
+  MessageErrorCode code = 1;
+  string message = 2;
+}
+
+enum MessageErrorCode {
+  UNKNOWN = 0;
+  INVALID_MESSAGE = 1;
+  INVALID_SIGNATURE = 2;
+}
+
+message AuthData {
+  string access_token = 1;
+}
+
+message DeliveryStatus {
+  bool delivered = 1;
+  bool read = 2;
+  uint64 delivered_at = 3;
+  uint64 read_at = 4;
 }

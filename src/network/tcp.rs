@@ -66,6 +66,7 @@ impl TcpServer {
                     version_vector: our_vv.to_string(),
                     signature: Vec::new(),
                     encryption_type: EncryptionType::None as i32,
+                    metadata: None,
                   };
                   response_messages.push(msg_proto.encode_to_vec());
                 }

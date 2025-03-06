@@ -115,6 +115,7 @@ async fn main() {
             version_vector: String::new(),
             signature,
             encryption_type: EncryptionType::None as i32,
+            metadata: None,
           };
 
           let bytes = msg.encode_to_vec();
