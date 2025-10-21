@@ -1,4 +1,4 @@
-Golang Version: [English](https://github.com/sophatvathana/angkorim/tree/golang-basic) 
+[Golang Version](https://github.com/sophatvathana/angkorim/tree/golang-basic) 
 
 # AngkorIM
 
